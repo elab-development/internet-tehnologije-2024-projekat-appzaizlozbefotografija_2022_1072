@@ -9,7 +9,7 @@ class Izlozba extends Model
 {
     use HasFactory;
 
-    protected $table = 'izlozbas';
+    protected $table = 'izlozbe';
 
     protected $fillable = [
         'naziv',
@@ -18,4 +18,15 @@ class Izlozba extends Model
         'datum',
         'dostupnaMesta'
     ];
+
+    public function prijave()
+{
+    return $this->hasMany(Prijava::class, 'izlozba_id');
+}
+
+    public function fotografije()
+{
+    return $this->hasMany(Fotografija::class, 'izlozba_id');
+}    
+
 }
