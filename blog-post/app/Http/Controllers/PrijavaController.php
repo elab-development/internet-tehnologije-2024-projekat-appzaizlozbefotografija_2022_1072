@@ -16,10 +16,18 @@ class PrijavaController extends Controller
 
     // Kreiranje nove prijave
     public function store(Request $request)
-    {
-        $prijava = Prijava::create($request->all());
-        return response()->json($prijava, 201);
-    }
+{
+    $validated = $request->validate([
+        'korisnik_id' => 'required|exists:korisniks,id',
+        'izlozba_id' => 'required|exists:izlozbas,id',
+        'napomena' => 'nullable|string|max:500',
+    ]);
+
+    $prijava = Prijava::create($validated);
+
+    return response()->json($prijava, 201);
+}
+
 
     // Prikaz jedne prijave
     public function show($id)
@@ -35,17 +43,23 @@ class PrijavaController extends Controller
 
     // Ažuriranje prijave
     public function update(Request $request, $id)
-    {
-        $prijava = Prijava::find($id);
-
-        if (!$prijava) {
-            return response()->json(['message' => 'Prijava nije pronađena.'], 404);
-        }
-
-        $prijava->update($request->all());
-
-        return response()->json($prijava, 200);
+{
+    $prijava = Prijava::find($id);
+    if (!$prijava) {
+        return response()->json(['error' => 'Prijava nije pronađena.'], 404);
     }
+
+    $validated = $request->validate([
+        'korisnik_id' => 'sometimes|exists:korisniks,id',
+        'izlozba_id' => 'sometimes|exists:izlozbas,id',
+        'napomena' => 'nullable|string|max:500',
+    ]);
+
+    $prijava->update($validated);
+
+    return response()->json($prijava);
+}
+
 
     // Brisanje prijave
     public function destroy($id)

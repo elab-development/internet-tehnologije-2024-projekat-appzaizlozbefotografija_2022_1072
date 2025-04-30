@@ -15,10 +15,19 @@ class IzlozbaController extends Controller
 
     // Dodavanje nove izložbe
     public function store(Request $request)
-    {
-        $izlozba = Izlozba::create($request->all());
-        return response()->json($izlozba, 201);
-    }
+{
+    $validatedData = $request->validate([
+        'naziv' => 'required|string|max:255',
+        'datum' => 'required|date',
+        'lokacija' => 'required|string|max:255',
+        'opis' => 'nullable|string',
+    ]);
+
+    $izlozba = Izlozba::create($validatedData);
+
+    return response()->json($izlozba, 201); // 201 = Created
+}
+
 
     // Prikaz jedne izložbe
     public function show($id)
@@ -36,15 +45,22 @@ class IzlozbaController extends Controller
     public function update(Request $request, $id)
 {
     $izlozba = Izlozba::find($id);
-
     if (!$izlozba) {
-        return response()->json(['message' => 'Izložba nije pronađena.'], 404);
+        return response()->json(['error' => 'Izložba nije pronađena.'], 404);
     }
 
-    $izlozba->update($request->all());
+    $validatedData = $request->validate([
+        'naziv' => 'required|string|max:255',
+        'datum' => 'required|date',
+        'lokacija' => 'required|string|max:255',
+        'opis' => 'nullable|string',
+    ]);
 
-    return response()->json($izlozba, 200);
+    $izlozba->update($validatedData);
+
+    return response()->json($izlozba);
 }
+
 
     // Brisanje izložbe
     public function destroy($id)

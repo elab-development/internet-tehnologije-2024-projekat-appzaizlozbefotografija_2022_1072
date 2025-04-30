@@ -15,10 +15,18 @@ class FotografijaController extends Controller
 
     // Kreiranje nove fotografije
     public function store(Request $request)
-    {
-        $fotografija = Fotografija::create($request->all());
-        return response()->json($fotografija, 201);
-    }
+{
+    $validated = $request->validate([
+        'url' => 'required|url|max:2048',
+        'naziv' => 'required|string|max:100',
+        'opis' => 'nullable|string|max:500',
+        'izlozba_id' => 'required|exists:izlozbas,id',
+    ]);
+
+    $fotografija = Fotografija::create($validated);
+
+    return response()->json($fotografija, 201);
+}
 
     // Prikaz jedne fotografije
     public function show($id)
@@ -34,17 +42,23 @@ class FotografijaController extends Controller
 
     // Ažuriranje fotografije
     public function update(Request $request, $id)
-    {
-        $fotografija = Fotografija::find($id);
-
-        if (!$fotografija) {
-            return response()->json(['message' => 'Fotografija nije pronađena.'], 404);
-        }
-
-        $fotografija->update($request->all());
-
-        return response()->json($fotografija, 200);
+{
+    $fotografija = Fotografija::find($id);
+    if (!$fotografija) {
+        return response()->json(['error' => 'Fotografija nije pronađena.'], 404);
     }
+
+    $validated = $request->validate([
+        'url' => 'sometimes|url|max:2048',
+        'naziv' => 'sometimes|string|max:100',
+        'opis' => 'nullable|string|max:500',
+        'izlozba_id' => 'sometimes|exists:izlozbas,id',
+    ]);
+
+    $fotografija->update($validated);
+
+    return response()->json($fotografija);
+}
 
     // Brisanje fotografije
     public function destroy($id)

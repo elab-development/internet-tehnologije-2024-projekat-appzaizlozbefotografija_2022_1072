@@ -15,10 +15,21 @@ class KorisnikController extends Controller
 
     // Dodavanje novog korisnika
     public function store(Request $request)
-    {
-        $korisnik = Korisnik::create($request->all());
-        return response()->json($korisnik, 201);
-    }
+{
+    $validated = $request->validate([
+        'ime' => 'required|string|max:50',
+        'prezime' => 'required|string|max:50',
+        'email' => 'required|email|unique:korisniks,email',
+        'lozinka' => 'required|string|min:6',
+        'uloga' => 'required|in:admin,fotograf,posetilac',
+    ]);
+
+    $validated['lozinka'] = bcrypt($validated['lozinka']); // heširanje lozinke
+
+    $korisnik = Korisnik::create($validated);
+
+    return response()->json($korisnik, 201);
+}
 
     // Prikaz jednog korisnika
     public function show($id)
