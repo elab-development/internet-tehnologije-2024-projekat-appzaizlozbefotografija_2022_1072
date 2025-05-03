@@ -45,17 +45,28 @@ class KorisnikController extends Controller
 
     // Ažuriranje korisnika
     public function update(Request $request, $id)
-    {
-        $korisnik = Korisnik::find($id);
-
-        if (!$korisnik) {
-            return response()->json(['message' => 'Korisnik nije pronađen.'], 404);
-        }
-
-        $korisnik->update($request->all());
-
-        return response()->json($korisnik, 200);
+{
+    $korisnik = Korisnik::find($id);
+    if (!$korisnik) {
+        return response()->json(['error' => 'Korisnik nije pronađen.'], 404);
     }
+
+    $validated = $request->validate([
+        'ime' => 'sometimes|string|max:50',
+        'prezime' => 'sometimes|string|max:50',
+        'email' => 'sometimes|email|unique:korisnici,email,' . $id,
+        'lozinka' => 'sometimes|string|min:6',
+        'uloga' => 'sometimes|in:admin,fotograf,posetilac',
+    ]);
+
+    if (isset($validated['lozinka'])) {
+        $validated['lozinka'] = bcrypt($validated['lozinka']);
+    }
+
+    $korisnik->update($validated);
+
+    return response()->json($korisnik);
+}
 
     // Brisanje korisnika
     public function destroy($id)
@@ -70,21 +81,4 @@ class KorisnikController extends Controller
 
         return response()->json(null, 204);
     }
-
-    public function izlozbe($id)
-{
-    $korisnik = \App\Models\Korisnik::with('prijave.izlozba')->find($id);
-
-    if (!$korisnik) {
-        return response()->json(['error' => 'Korisnik nije pronađen.'], 404);
-    }
-
-    $izlozbe = $korisnik->prijave->map(function ($prijava) {
-        return $prijava->izlozba;
-    });
-
-    return response()->json($izlozbe);
-}
-
-
 }
