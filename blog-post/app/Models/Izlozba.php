@@ -24,9 +24,11 @@ class Izlozba extends Model
     return $this->hasMany(Prijava::class, 'izlozba_id');
 }
 
-    public function fotografije()
+   
+public function fotografije()
 {
-    return $this->hasMany(Fotografija::class, 'izlozba_id');
-}    
+    return $this->hasMany(\App\Models\Fotografija::class);
+}
+
 
 }

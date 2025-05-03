@@ -23,4 +23,7 @@ class Korisnik extends Model
     {
         return $this->hasMany(Prijava::class, 'korisnik_id');
     }
+
+    
+
 }

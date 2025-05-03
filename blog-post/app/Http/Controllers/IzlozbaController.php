@@ -21,6 +21,7 @@ class IzlozbaController extends Controller
         'datum' => 'required|date',
         'lokacija' => 'required|string|max:255',
         'opis' => 'nullable|string',
+        'dostupnaMesta' => 'nullable|integer|min:0'
     ]);
 
     $izlozba = Izlozba::create($validatedData);
@@ -54,6 +55,7 @@ class IzlozbaController extends Controller
         'datum' => 'required|date',
         'lokacija' => 'required|string|max:255',
         'opis' => 'nullable|string',
+        'dostupnaMesta' => 'nullable|integer|min:0'
     ]);
 
     $izlozba->update($validatedData);
@@ -75,4 +77,15 @@ class IzlozbaController extends Controller
     
         return response()->json(null, 204);
     }
+
+    public function fotografije($id)
+{
+    $izlozba = \App\Models\Izlozba::find($id);
+    if (!$izlozba) {
+        return response()->json(['error' => 'Izložba nije pronađena.'], 404);
+    }
+
+    return response()->json($izlozba->fotografije);
+}
+
 }

@@ -19,7 +19,7 @@ class KorisnikController extends Controller
     $validated = $request->validate([
         'ime' => 'required|string|max:50',
         'prezime' => 'required|string|max:50',
-        'email' => 'required|email|unique:korisniks,email',
+        'email' => 'required|email|unique:korisnici,email',
         'lozinka' => 'required|string|min:6',
         'uloga' => 'required|in:admin,fotograf,posetilac',
     ]);
@@ -70,4 +70,21 @@ class KorisnikController extends Controller
 
         return response()->json(null, 204);
     }
+
+    public function izlozbe($id)
+{
+    $korisnik = \App\Models\Korisnik::with('prijave.izlozba')->find($id);
+
+    if (!$korisnik) {
+        return response()->json(['error' => 'Korisnik nije pronađen.'], 404);
+    }
+
+    $izlozbe = $korisnik->prijave->map(function ($prijava) {
+        return $prijava->izlozba;
+    });
+
+    return response()->json($izlozbe);
+}
+
+
 }

@@ -18,11 +18,14 @@ class PrijavaController extends Controller
     public function store(Request $request)
 {
     $validated = $request->validate([
-        'korisnik_id' => 'required|exists:korisniks,id',
-        'izlozba_id' => 'required|exists:izlozbas,id',
-        'napomena' => 'nullable|string|max:500',
+        'korisnik_id' => 'required|exists:korisnici,id',
+        'izlozba_id' => 'required|exists:izlozbe,id',
+        'datum_prijave' => 'required|date'
     ]);
 
+    // Dodaj automatski QR kod (UUID)
+    $validated['qr_kod'] = \Illuminate\Support\Str::uuid();
+    
     $prijava = Prijava::create($validated);
 
     return response()->json($prijava, 201);
@@ -50,9 +53,9 @@ class PrijavaController extends Controller
     }
 
     $validated = $request->validate([
-        'korisnik_id' => 'sometimes|exists:korisniks,id',
-        'izlozba_id' => 'sometimes|exists:izlozbas,id',
-        'napomena' => 'nullable|string|max:500',
+        'korisnik_id' => 'sometimes|exists:korisnici,id',
+        'izlozba_id' => 'sometimes|exists:izlozbe,id',
+        'datum_prijave' => 'required|date'
     ]);
 
     $prijava->update($validated);
@@ -74,4 +77,33 @@ class PrijavaController extends Controller
 
         return response()->json(null, 204);
     }
+
+    public function posaljiPotvrdu($id)
+{
+    $prijava = \App\Models\Prijava::find($id);
+    if (!$prijava) {
+        return response()->json(['error' => 'Prijava nije pronađena.'], 404);
+    }
+
+    
+    return response()->json(['message' => 'Potvrda o prijavi je uspešno poslata (simulirano).']);
+}
+
+public function azurirajDatumeZaIzlozbu(Request $request, $id)
+{
+    $request->validate([
+        'datum_prijave' => 'required|date',
+    ]);
+
+    $brojAzuriranih = \App\Models\Prijava::where('izlozba_id', $id)
+        ->update(['datum_prijave' => $request->datum_prijave]);
+
+    return response()->json([
+        'message' => "Ažurirano $brojAzuriranih prijava za izložbu sa ID $id.",
+    ]);
+}
+
+
+
+
 }

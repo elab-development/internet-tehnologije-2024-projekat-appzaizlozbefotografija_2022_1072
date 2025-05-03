@@ -17,7 +17,7 @@ return new class extends Migration
             $table->text('opis');
             $table->string('lokacija'); 
             $table->date('datum');
-            $table->integer('dostupnaMesta');    
+            $table->integer('dostupnaMesta')->default(0);    
             $table->timestamps();
         });
     }

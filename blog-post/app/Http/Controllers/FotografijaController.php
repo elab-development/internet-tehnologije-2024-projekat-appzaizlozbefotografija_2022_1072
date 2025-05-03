@@ -20,7 +20,7 @@ class FotografijaController extends Controller
         'url' => 'required|url|max:2048',
         'naziv' => 'required|string|max:100',
         'opis' => 'nullable|string|max:500',
-        'izlozba_id' => 'required|exists:izlozbas,id',
+        'izlozba_id' => 'required|exists:izlozbe,id',
     ]);
 
     $fotografija = Fotografija::create($validated);
@@ -52,7 +52,7 @@ class FotografijaController extends Controller
         'url' => 'sometimes|url|max:2048',
         'naziv' => 'sometimes|string|max:100',
         'opis' => 'nullable|string|max:500',
-        'izlozba_id' => 'sometimes|exists:izlozbas,id',
+        'izlozba_id' => 'sometimes|exists:izlozbe,id',
     ]);
 
     $fotografija->update($validated);
