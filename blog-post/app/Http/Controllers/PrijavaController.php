@@ -20,16 +20,16 @@ class PrijavaController extends Controller
     $validated = $request->validate([
         'korisnik_id' => 'required|exists:korisnici,id',
         'izlozba_id' => 'required|exists:izlozbe,id',
-        'datum_prijave' => 'required|date'
     ]);
 
-    // Dodaj automatski QR kod (UUID)
-    $validated['qr_kod'] = \Illuminate\Support\Str::uuid();
-    
+    $validated['datum_prijave'] = now()->toDateString(); // ⬅ automatski datum
+    $validated['qr_kod'] = \Illuminate\Support\Str::uuid(); // ⬅ automatski QR kod
+
     $prijava = Prijava::create($validated);
 
     return response()->json($prijava, 201);
 }
+
 
 
     // Prikaz jedne prijave

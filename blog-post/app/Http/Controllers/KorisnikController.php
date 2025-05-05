@@ -21,7 +21,7 @@ class KorisnikController extends Controller
         'prezime' => 'required|string|max:50',
         'email' => 'required|email|unique:korisnici,email',
         'lozinka' => 'required|string|min:6',
-        'uloga' => 'required|in:admin,fotograf,posetilac',
+        'uloga' => 'required|in:administrator,fotograf,posetilac',
     ]);
 
     $validated['lozinka'] = bcrypt($validated['lozinka']); // heširanje lozinke
@@ -56,7 +56,7 @@ class KorisnikController extends Controller
         'prezime' => 'sometimes|string|max:50',
         'email' => 'sometimes|email|unique:korisnici,email,' . $id,
         'lozinka' => 'sometimes|string|min:6',
-        'uloga' => 'sometimes|in:admin,fotograf,posetilac',
+        'uloga' => 'sometimes|in:administrator,fotograf,posetilac',
     ]);
 
     if (isset($validated['lozinka'])) {
