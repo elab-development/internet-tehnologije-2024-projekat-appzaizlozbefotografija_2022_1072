@@ -23,34 +23,38 @@ Route::get('/fotografije/{id}', [FotografijaController::class, 'show']);
 Route::get('/prijave', [PrijavaController::class, 'index']);
 Route::get('/prijave/{id}', [PrijavaController::class, 'show']);
 
-// ✅ Admin – izložbe (store, update, destroy)
-Route::middleware(['auth:sanctum', 'uloga:administrator'])->group(function () {
+// ✅ Zaštićene rute – pristup po ulozi se proverava u kontroleru
+Route::middleware('auth:sanctum')->group(function () {
+    // Admin – upravljanje izložbama
     Route::post('/izlozbe', [IzlozbaController::class, 'store']);
     Route::put('/izlozbe/{id}', [IzlozbaController::class, 'update']);
     Route::delete('/izlozbe/{id}', [IzlozbaController::class, 'destroy']);
+
+    // Fotograf – dodavanje fotografija
+    Route::post('/fotografije', [FotografijaController::class, 'store']);
+
+    // Admin i fotograf – brisanje fotografija
+    Route::delete('/fotografije/{id}', [FotografijaController::class, 'destroy']);
+
+    // Posetilac – kreiranje prijave
+    Route::post('/prijave', [PrijavaController::class, 'store']);
+
+    // Admin i posetilac – brisanje prijave
+    Route::delete('/prijave/{id}', [PrijavaController::class, 'destroy']);
+
+    // Test ruta za proveru autentifikacije
+    Route::get('/zasticeno', function (Request $request) {
+        return response()->json([
+            'poruka' => 'Pristup uspešan. Dobrodošao, ' . $request->user()->name
+        ]);
+    });
 });
 
-// ✅ Fotograf – dodavanje fotografija
-Route::middleware(['auth:sanctum', 'uloga:fotograf'])->post('/fotografije', [FotografijaController::class, 'store']);
-
-// ✅ Admin i fotograf – brisanje fotografija
-Route::middleware(['auth:sanctum', 'uloga:administrator,fotograf'])->delete('/fotografije/{id}', [FotografijaController::class, 'destroy']);
-
-// ✅ Posetilac – kreiranje prijave
-Route::middleware(['auth:sanctum', 'uloga:posetilac'])->post('/prijave', [PrijavaController::class, 'store']);
-
-// ✅ Admin i posetilac – brisanje prijave
-Route::middleware(['auth:sanctum', 'uloga:administrator,posetilac'])->delete('/prijave/{id}', [PrijavaController::class, 'destroy']);
-
-// ✅ Ostale pomoćne rute (bez kontrole po ulozi)
+// ✅ Ostale pomoćne rute (javno dostupne)
 Route::get('/izlozbe/{id}/fotografije', [IzlozbaController::class, 'fotografije']);
 Route::get('/korisnici/{id}/izlozbe', [KorisnikController::class, 'izlozbe']);
 Route::post('/prijave/{id}/posalji-potvrdu', [PrijavaController::class, 'posaljiPotvrdu']);
 Route::put('/izlozbe/{id}/prijave/datum', [PrijavaController::class, 'azurirajDatumeZaIzlozbu']);
 
-// ✅ Test i zaštićena ruta
-Route::middleware('auth:sanctum')->get('/zasticeno', function (Request $request) {
-    return response()->json(['poruka' => 'Pristup uspešan. Dobrodošao, ' . $request->user()->ime]);
-});
-
+// ✅ Test ruta
 Route::get('/test', fn() => response()->json(['radi' => true]));

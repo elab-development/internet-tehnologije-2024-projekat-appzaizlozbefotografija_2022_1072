@@ -16,17 +16,16 @@ class AutentifikacijaKontroler extends Controller
             'prezime' => 'required|string|max:255',
             'email' => 'required|email|unique:korisnici,email',
             'lozinka' => 'required|string|min:6|confirmed',
-            'uloga' => 'required|string|in:administrator,fotograf,posetilac' // ✅ dodato
+            'uloga' => 'required|string|in:administrator,fotograf,posetilac'
         ]);
-        
+
         $korisnik = Korisnik::create([
             'ime' => $podaci['ime'],
             'prezime' => $podaci['prezime'],
             'email' => $podaci['email'],
             'lozinka' => Hash::make($podaci['lozinka']),
-            'uloga' => $podaci['uloga'] // ✅ dodato
+            'uloga' => $podaci['uloga']
         ]);
-        
 
         $token = $korisnik->createToken('pristup_token')->plainTextToken;
 

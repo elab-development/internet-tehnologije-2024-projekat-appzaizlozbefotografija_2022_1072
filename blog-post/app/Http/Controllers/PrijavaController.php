@@ -17,6 +17,10 @@ class PrijavaController extends Controller
     // Kreiranje nove prijave
     public function store(Request $request)
 {
+    if (auth()->user()->uloga !== 'posetilac') {
+        return response()->json(['poruka' => 'Samo posetilac može da se prijavi.'], 403);
+    }
+    
     $validated = $request->validate([
         'korisnik_id' => 'required|exists:korisnici,id',
         'izlozba_id' => 'required|exists:izlozbe,id',
@@ -67,6 +71,10 @@ class PrijavaController extends Controller
     // Brisanje prijave
     public function destroy($id)
     {
+        if (!in_array(auth()->user()->uloga, ['posetilac', 'administrator'])) {
+            return response()->json(['poruka' => 'Nemate dozvolu za brisanje.'], 403);
+        }
+        
         $prijava = Prijava::find($id);
 
         if (!$prijava) {

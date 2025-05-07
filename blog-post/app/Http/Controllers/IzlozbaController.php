@@ -7,15 +7,39 @@ use Illuminate\Http\Request;
 
 class IzlozbaController extends Controller
 {
-    // Prikaz svih izložbi
-    public function index()
-    {
-        return response()->json(Izlozba::all(), 200);
+    public function index(Request $request)
+{
+    $query = Izlozba::query();
+
+    // Filtriranje po nazivu
+    if ($request->has('naziv')) {
+        $query->where('naziv', 'like', '%' . $request->naziv . '%');
     }
+
+    // Filtriranje po datumu
+    if ($request->has('datum')) {
+        $query->whereDate('datum', $request->datum);
+    }
+
+    // Filtriranje po lokaciji
+    if ($request->has('lokacija')) {
+    $query->where('lokacija', 'like', '%' . $request->lokacija . '%');
+    }
+
+
+    // Paginacija (10 po strani)
+    $izlozbe = $query->paginate(10);
+
+    return response()->json($izlozbe);
+}
 
     // Dodavanje nove izložbe
     public function store(Request $request)
 {
+    if (auth()->user()->uloga !== 'administrator') {
+        return response()->json(['poruka' => 'Nemate dozvolu za ovu akciju.'], 403);
+    }
+    
     $validatedData = $request->validate([
         'naziv' => 'required|string|max:255',
         'datum' => 'required|date',
@@ -45,6 +69,10 @@ class IzlozbaController extends Controller
     // Ažuriranje izložbe
     public function update(Request $request, $id)
 {
+    if (auth()->user()->uloga !== 'administrator') {
+        return response()->json(['poruka' => 'Nemate dozvolu za ovu akciju.'], 403);
+    }
+    
     $izlozba = Izlozba::find($id);
     if (!$izlozba) {
         return response()->json(['error' => 'Izložba nije pronađena.'], 404);
@@ -67,6 +95,10 @@ class IzlozbaController extends Controller
     // Brisanje izložbe
     public function destroy($id)
     {
+        if (auth()->user()->uloga !== 'administrator') {
+            return response()->json(['poruka' => 'Nemate dozvolu za ovu akciju.'], 403);
+        }
+        
         $izlozba = Izlozba::find($id);
     
         if (!$izlozba) {

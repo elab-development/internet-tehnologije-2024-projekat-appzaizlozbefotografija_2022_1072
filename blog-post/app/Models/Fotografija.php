@@ -16,6 +16,7 @@ class Fotografija extends Model
         'url',
         'naziv',
         'opis',
+        'putanja_slike'
     ];
 
     public function izlozba()

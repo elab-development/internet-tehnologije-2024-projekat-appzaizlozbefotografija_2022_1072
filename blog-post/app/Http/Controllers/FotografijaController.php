@@ -7,28 +7,46 @@ use Illuminate\Http\Request;
 
 class FotografijaController extends Controller
 {
-    // Prikaz svih fotografija
     public function index()
     {
         return response()->json(Fotografija::all(), 200);
     }
 
-    // Kreiranje nove fotografije
     public function store(Request $request)
-{
-    $validated = $request->validate([
-        'url' => 'required|url|max:2048',
-        'naziv' => 'required|string|max:100',
-        'opis' => 'nullable|string|max:500',
-        'izlozba_id' => 'required|exists:izlozbe,id',
-    ]);
+    {
+        if (auth()->user()->uloga !== 'fotograf') {
+            return response()->json(['poruka' => 'Samo fotograf može da dodaje fotografije.'], 403);
+        }
 
-    $fotografija = Fotografija::create($validated);
+        $validated = $request->validate([
+            'naziv' => 'required|string|max:100',
+            'opis' => 'nullable|string|max:500',
+            'izlozba_id' => 'required|exists:izlozbe,id',
+            'slika' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'url' => 'nullable|url|max:2048',
+        ]);
+        
 
-    return response()->json($fotografija, 201);
-}
+        if (!$request->hasFile('slika') && !$request->filled('url')) {
+            return response()->json(['poruka' => 'Morate uneti URL slike ili uploadovati fajl.'], 422);
+        }
 
-    // Prikaz jedne fotografije
+        $fotografija = new Fotografija();
+        $fotografija->naziv = $validated['naziv'];
+        $fotografija->opis = $validated['opis'] ?? null;
+        $fotografija->izlozba_id = $validated['izlozba_id'];
+
+        if ($request->hasFile('slika')) {
+            $fotografija->putanja_slike = $request->file('slika')->store('fotografije', 'public');
+        } elseif ($request->filled('url')) {
+            $fotografija->putanja_slike = $validated['url'];
+        }
+
+        $fotografija->save();
+
+        return response()->json($fotografija, 201);
+    }
+
     public function show($id)
     {
         $fotografija = Fotografija::find($id);
@@ -40,37 +58,33 @@ class FotografijaController extends Controller
         return response()->json($fotografija, 200);
     }
 
-    // Ažuriranje fotografije
     public function update(Request $request, $id)
-{
-    $fotografija = Fotografija::find($id);
-    if (!$fotografija) {
-        return response()->json(['error' => 'Fotografija nije pronađena.'], 404);
+    {
+        $fotografija = Fotografija::find($id);
+        if (!$fotografija) {
+            return response()->json(['error' => 'Fotografija nije pronađena.'], 404);
+        }
+
+        $validated = $request->validate([
+            'naziv' => 'sometimes|string|max:100',
+            'opis' => 'nullable|string|max:500',
+            'izlozba_id' => 'sometimes|exists:izlozbe,id',
+        ]);
+
+        $fotografija->update($validated);
+
+        return response()->json($fotografija, 200);
     }
 
-    $validated = $request->validate([
-        'url' => 'sometimes|url|max:2048',
-        'naziv' => 'sometimes|string|max:100',
-        'opis' => 'nullable|string|max:500',
-        'izlozba_id' => 'sometimes|exists:izlozbe,id',
-    ]);
-
-    $fotografija->update($validated);
-
-    return response()->json($fotografija);
-}
-
-    // Brisanje fotografije
     public function destroy($id)
     {
         $fotografija = Fotografija::find($id);
-
         if (!$fotografija) {
             return response()->json(['message' => 'Fotografija nije pronađena.'], 404);
         }
 
         $fotografija->delete();
 
-        return response()->json(null, 204);
+        return response()->json(['message' => 'Fotografija je uspešno obrisana.'], 200);
     }
 }
