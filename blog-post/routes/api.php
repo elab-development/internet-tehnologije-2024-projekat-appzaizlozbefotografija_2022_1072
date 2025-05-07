@@ -58,3 +58,5 @@ Route::put('/izlozbe/{id}/prijave/datum', [PrijavaController::class, 'azurirajDa
 
 // ✅ Test ruta
 Route::get('/test', fn() => response()->json(['radi' => true]));
+
+Route::post('/zaboravljena-lozinka', [AutentifikacijaKontroler::class, 'resetujLozinku']);

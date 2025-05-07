@@ -64,4 +64,24 @@ class AutentifikacijaKontroler extends Controller
 
         return response()->json(['poruka' => 'Uspešno ste se odjavili.']);
     }
+
+    //reset lozinke
+    
+
+public function resetujLozinku(Request $request)
+{
+    $request->validate([
+        'email' => 'required|email|exists:korisnici,email',
+        'nova_lozinka' => 'required|min:6|confirmed',
+    ]);
+
+    $korisnik = Korisnik::where('email', $request->email)->first();
+    $korisnik->lozinka = Hash::make($request->nova_lozinka);
+    $korisnik->save();
+
+    return response()->json([
+        'poruka' => 'Lozinka je uspešno promenjena.'
+    ]);
+}
+
 }
