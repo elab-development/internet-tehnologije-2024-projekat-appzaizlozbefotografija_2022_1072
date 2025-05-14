@@ -1,19 +1,29 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import './Navbar.css';
 
-const Navbar = () => {
+export default function Navbar() {
+  const { pathname } = useLocation();
+
+  const links = [
+    { text: 'Početna', path: '/' },
+    { text: 'Izložbe', path: '/izlozbe' },
+    { text: 'Galerija', path: '/galerija' },
+    { text: 'Prijava', path: '/prijava' },
+  ];
+
   return (
-    <nav className="navbar">
-      <h2 className="logo"></h2>
-      <ul className="nav-links">
-        <li><Link to="/">Početna</Link></li>
-        <li><Link to="/izlozbe">Izložbe</Link></li>
-        <li><Link to="/galerija">Galerija</Link></li>
-        <li><Link to="/prijava">Prijava</Link></li>
-      </ul>
+    <nav className="custom-navbar">
+      <div className="navbar-left">
+        {links
+          .filter(link => link.path !== pathname)
+          .map((link, index, arr) => (
+            <React.Fragment key={link.path}>
+              <Link to={link.path}>{link.text}</Link>
+              {index < arr.length - 1 && <span className="separator">|</span>}
+            </React.Fragment>
+          ))}
+      </div>
     </nav>
   );
-};
-
-export default Navbar;
+}
