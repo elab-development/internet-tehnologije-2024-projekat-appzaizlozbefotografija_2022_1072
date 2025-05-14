@@ -16,7 +16,6 @@ class AutentifikacijaKontroler extends Controller
             'prezime' => 'required|string|max:255',
             'email' => 'required|email|unique:korisnici,email',
             'lozinka' => 'required|string|min:6|confirmed',
-            'uloga' => 'required|string|in:administrator,fotograf,posetilac'
         ]);
 
         $korisnik = Korisnik::create([
@@ -24,15 +23,22 @@ class AutentifikacijaKontroler extends Controller
             'prezime' => $podaci['prezime'],
             'email' => $podaci['email'],
             'lozinka' => Hash::make($podaci['lozinka']),
-            'uloga' => $podaci['uloga']
+            'uloga' => 'posetilac' 
         ]);
 
         $token = $korisnik->createToken('pristup_token')->plainTextToken;
 
         return response()->json([
-            'korisnik' => $korisnik,
-            'token' => $token
+        'korisnik' => [
+        'id' => $korisnik->id,
+        'ime' => $korisnik->ime,
+        'prezime' => $korisnik->prezime,
+        'email' => $korisnik->email,
+        'uloga' => $korisnik->uloga
+        ],
+        'token' => $token
         ], 201);
+
     }
 
     // Prijava korisnika
@@ -51,9 +57,15 @@ class AutentifikacijaKontroler extends Controller
 
         $token = $korisnik->createToken('pristup_token')->plainTextToken;
 
-        return response()->json([
-            'korisnik' => $korisnik,
-            'token' => $token
+         return response()->json([
+        'korisnik' => [
+        'id' => $korisnik->id,
+        'ime' => $korisnik->ime,
+        'prezime' => $korisnik->prezime,
+        'email' => $korisnik->email,
+        'uloga' => $korisnik->uloga
+        ],
+        'token' => $token
         ]);
     }
 
