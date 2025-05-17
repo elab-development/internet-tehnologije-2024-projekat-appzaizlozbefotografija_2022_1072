@@ -12,8 +12,8 @@
 .input-element {
   padding: 0.5rem;
   font-size: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+  border: 1px solid #5F7161;
+  border-radius: 0;
 }
 
 .input-element:focus {
@@ -22,11 +22,11 @@
 }
 
 .input-error {
-  border-color: red;
+  border-color: #BE3144;
 }
 
 .input-error-message {
-  color: red;
+  color: #BE3144;
   font-size: 0.85rem;
   margin-top: 0.25rem;
 }

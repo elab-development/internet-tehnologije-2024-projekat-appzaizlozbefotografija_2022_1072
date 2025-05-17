@@ -9,7 +9,7 @@ export default function Pocetna() {
     >
       <div className="blur-sloj"></div>
       <div className="naslov">
-        <h1>Dobrodošli u svet objektiva</h1>
+        <h1>Dobro došli u svet objektiva</h1>
       </div>
     </div>
   );

@@ -29,7 +29,7 @@
   color: white;
   text-align: center;
   font-size: 3rem;
-  font-family: 'Sora', sans-serif;
+  /*font-family: 'Sora', sans-serif;*/
   z-index: 2;
   letter-spacing: 1px;
 }

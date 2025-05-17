@@ -1,0 +1,52 @@
+.detalji-container {
+  display: flex;
+  flex-direction: row;
+  padding: 6rem 4rem 2rem 4rem;
+  background-color: white;
+  min-height: 100vh;
+  gap: 4rem;
+  box-sizing: border-box;
+}
+
+.detalji-tekst {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.naslov-izlozbe {
+  text-align: left;
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.opis {
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.detalji-slika {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 0;
+}
+
+.detalji-slika img {
+  width: 100%;
+  max-width: 450px;
+  height: auto;
+  object-fit: cover;
+  border-radius: 0;
+}
+
+.prijava-dugme {
+  width: 100%;
+  max-width: 200px;
+  padding: 0.5rem 1rem;
+  margin-bottom: 0;
+  align-self: flex-start;
+}

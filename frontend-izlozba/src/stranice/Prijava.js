@@ -1,59 +1,43 @@
 import React, { useState } from 'react';
 import InputField from '../komponente/InputField';
 import Button from '../komponente/Button';
-import Modal from '../komponente/Modal';
+import { Link } from 'react-router-dom';
+import './Prijava.css';
 
 export default function Prijava() {
   const [email, setEmail] = useState('');
-  const [sifra, setSifra] = useState('');
-  const [modalOpen, setModalOpen] = useState(false);
+  const [lozinka, setLozinka] = useState('');
 
   const handlePrijava = () => {
-    if (email.trim() && sifra.trim()) {
-      setModalOpen(true);
-    } else {
-      alert('Popunite sva polja.');
-    }
+    alert(`Email: ${email}\nLozinka: ${lozinka}`);
+    // Ovaj alert ćemo kasnije zameniti pozivom backendu
   };
 
   return (
-    <div style={{ paddingTop: '80px', paddingLeft: '2rem', paddingRight: '2rem', paddingBottom: '2rem' }}>
-      <h1>Prijava korisnika</h1>
-
-      <InputField
-        label="Email"
-        type="email"
-        placeholder="Unesite email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
-
-      <InputField
-        label="Šifra"
-        type="password"
-        placeholder="Unesite šifru"
-        value={sifra}
-        onChange={(e) => setSifra(e.target.value)}
-      />
-
-      <Button
-        text="Prijavi se"
-        onClick={handlePrijava}
-        variant="primary"
-      />
-
-      <div style={{ marginTop: '1rem' }}>
-        <p><strong>Uneti email:</strong> {email}</p>
-        <p><strong>Uneta šifra:</strong> {sifra}</p>
+    <div className="prijava-container">
+      <div className="prijava-forma">
+        <h2 style={{ textAlign: 'center' }}>Prijava korisnika</h2>
+        <InputField
+          label="E-mail"
+          type="email"
+          placeholder="Unesite e-mail"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <InputField
+          label="Lozinka"
+          type="password"
+          placeholder="Unesite lozinku"
+          value={lozinka}
+          onChange={(e) => setLozinka(e.target.value)}
+        />
+        <div style={{ textAlign: 'center', marginTop: '1rem' }}>
+          <Button text="Prijavi se" onClick={handlePrijava} />
+        </div>
+        <div className="link-registracija">
+          <Link to="/registracija">Nemate nalog? Registrujte se ovde</Link>
+        </div>
       </div>
-
-      <Modal
-        isOpen={modalOpen}
-        onClose={() => setModalOpen(false)}
-        title="Uspešna prijava"
-      >
-        <p>Uspešno ste se prijavili sa emailom: <strong>{email}</strong></p>
-      </Modal>
     </div>
   );
 }
