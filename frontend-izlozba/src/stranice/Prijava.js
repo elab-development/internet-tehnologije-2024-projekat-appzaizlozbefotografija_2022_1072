@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import InputField from '../komponente/InputField';
 import Button from '../komponente/Button';
 import { Link } from 'react-router-dom';
@@ -7,10 +8,12 @@ import './Prijava.css';
 export default function Prijava() {
   const [email, setEmail] = useState('');
   const [lozinka, setLozinka] = useState('');
+  const navigate = useNavigate();
 
   const handlePrijava = () => {
     alert(`Email: ${email}\nLozinka: ${lozinka}`);
     // Ovaj alert ćemo kasnije zameniti pozivom backendu
+    navigate('/izlozbe');
   };
 
   return (
