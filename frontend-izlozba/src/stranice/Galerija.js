@@ -1,6 +1,6 @@
 import React from 'react';
 import './Galerija.css';
-import Button from '../komponente/Button'; // putanja ka tvojoj reusable komponenti
+import Button from '../komponente/Button';
 
 export default function Galerija() {
   const fotografije = [

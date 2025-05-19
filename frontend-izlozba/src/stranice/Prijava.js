@@ -12,7 +12,7 @@ export default function Prijava() {
 
   const handlePrijava = () => {
     alert(`Email: ${email}\nLozinka: ${lozinka}`);
-    // Ovaj alert ćemo kasnije zameniti pozivom backendu
+    //!!Ovaj alert ćemo kasnije zameniti pozivom backendu!!
     navigate('/izlozbe');
   };
 
