@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './Izlozbe.css';
+import InputField from '../komponente/InputField'; // <- dodato
 
 export default function Izlozbe() {
   const izlozbe = [
@@ -64,7 +65,7 @@ export default function Izlozbe() {
     <div className="izlozbe-container">
       <h1 className="naslov-izlozbe">Pregled izložbi</h1>
 
-      <input
+      <InputField
         type="text"
         placeholder="Pretraži izložbe po nazivu..."
         value={searchTerm}
@@ -72,7 +73,6 @@ export default function Izlozbe() {
           setSearchTerm(e.target.value);
           setCurrentPage(1);
         }}
-        style={{ padding: '0.5rem', marginBottom: '1rem', width: '300px' }}
       />
 
       <div className="izlozbe-grid">
@@ -88,23 +88,22 @@ export default function Izlozbe() {
         ))}
       </div>
 
-      <div style={{ marginTop: '1rem' }}>
-        {Array.from({ length: totalPages }, (_, i) => (
-          <button
-            key={i}
-            onClick={() => handlePageChange(i + 1)}
-            style={{
-              margin: '0 0.25rem',
-              padding: '0.5rem 1rem',
-              backgroundColor: currentPage === i + 1 ? '#007bff' : '#ccc',
-              color: 'white',
-              border: 'none',
-              borderRadius: '5px'
-            }}
-          >
-            {i + 1}
-          </button>
-        ))}
+      <div className="paginacija-strelice">
+        <button
+          onClick={() => handlePageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+          className="strelica-levo"
+        >
+          ‹
+        </button>
+
+        <button
+          onClick={() => handlePageChange(currentPage + 1)}
+          disabled={currentPage === totalPages}
+          className="strelica-desno"
+        >
+          ›
+        </button>
       </div>
     </div>
   );

@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './Galerija.css';
 import Button from '../komponente/Button';
 
 export default function Galerija() {
-  const fotografije = [
+  const sveFotografije = [
     {
       id: 1,
       naziv: 'Fotografija 1',
@@ -31,28 +31,37 @@ export default function Galerija() {
     {
       id: 5,
       naziv: 'Fotografija 5',
-      izlozba: 'Izlzoba 5',
+      izlozba: 'Izlozba 5',
       slika: '/galerija1.jpeg',
     }
   ];
 
   const korisnik = { uloga: 'fotograf' };
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 3;
+
+  const totalPages = Math.ceil(sveFotografije.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const currentFotografije = sveFotografije.slice(startIndex, startIndex + itemsPerPage);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
   return (
     <div className="galerija-wrapper">
-      <h1 className="naslov-izlozbe">Pregled fotografija</h1>
-
+      <h1 className="galerija-naslov">Pregled fotografija</h1>
 
       {korisnik.uloga === 'fotograf' && (
         <div className="galerija-dugmad-horizontalno">
           <Button text="Dodaj fotografiju" onClick={() => alert("Dodaj")} />
           <Button text="Obriši fotografiju" onClick={() => alert("Obriši")} />
-
         </div>
       )}
 
       <div className="galerija-grid">
-        {fotografije.map((foto) => (
+        {currentFotografije.map((foto) => (
           <div key={foto.id} className="galerija-item">
             <img src={foto.slika} alt={foto.naziv} className="galerija-slika" />
             <div className="galerija-opis">
@@ -61,6 +70,24 @@ export default function Galerija() {
             </div>
           </div>
         ))}
+      </div>
+
+      <div className="paginacija-strelice">
+        <button
+          onClick={() => handlePageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+          className="strelica-levo"
+        >
+          ‹
+        </button>
+
+        <button
+          onClick={() => handlePageChange(currentPage + 1)}
+          disabled={currentPage === totalPages}
+          className="strelica-desno"
+        >
+          ›
+        </button>
       </div>
     </div>
   );

@@ -64,3 +64,43 @@
   margin-bottom: 2rem;
 }
 
+.paginacija-strelice {
+  position: relative;
+  width: 100%;
+  height: 60px;
+  margin-top: 2rem;
+}
+
+.strelica-levo,
+.strelica-desno {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  font-size: 2rem;
+  color: black;
+  cursor: pointer;
+  opacity: 0.5;
+  transition: opacity 0.3s ease;
+  padding: 0;
+}
+
+.strelica-levo:hover,
+.strelica-desno:hover {
+  opacity: 1;
+}
+
+.strelica-levo:disabled,
+.strelica-desno:disabled {
+  opacity: 0.2;
+  cursor: not-allowed;
+}
+
+.strelica-levo {
+  left: 10px;
+}
+
+.strelica-desno {
+  right: 10px;
+}
