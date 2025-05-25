@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import InputField from '../komponente/InputField';
 import Button from '../komponente/Button';
-import { Link } from 'react-router-dom';
-import './Prijava.css'; // koristimo isti stil!
+import { Link, useNavigate } from 'react-router-dom';
+import './Prijava.css';
 
 export default function Registracija() {
   const [ime, setIme] = useState('');
@@ -10,6 +10,7 @@ export default function Registracija() {
   const [email, setEmail] = useState('');
   const [lozinka, setLozinka] = useState('');
   const [potvrdaLozinke, setPotvrdaLozinke] = useState('');
+  const navigate = useNavigate();
 
   const handleRegistracija = () => {
     if (lozinka !== potvrdaLozinke) {
@@ -17,8 +18,41 @@ export default function Registracija() {
       return;
     }
 
-    alert(`Ime: ${ime}\nPrezime: ${prezime}\nEmail: ${email}`);
-    // Ovde će kasnije ići poziv backendu
+    const korisnik = {
+  ime: ime,
+  prezime: prezime,
+  email: email,
+  lozinka: lozinka,
+  lozinka_confirmation: potvrdaLozinke, 
+  uloga: 'posetilac'
+};
+
+
+    fetch('http://127.0.0.1:8000/api/registracija', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(korisnik)
+    })
+      .then(res => {
+        if (!res.ok) {
+          return res.json().then(err => {
+            throw new Error(err.message || 'Greška pri registraciji');
+          });
+        }
+        return res.json();
+      })
+      .then(data => {
+        localStorage.setItem('token', data.token);
+        alert('Uspešna registracija! Prijavite se.');
+        navigate('/prijava'); 
+        window.location.reload();
+      })
+      .catch(err => {
+        console.error(err);
+        alert('Greška: ' + err.message);
+      });
   };
 
   return (

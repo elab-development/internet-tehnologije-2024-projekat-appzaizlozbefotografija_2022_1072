@@ -11,9 +11,38 @@ export default function Prijava() {
   const navigate = useNavigate();
 
   const handlePrijava = () => {
-    alert(`Email: ${email}\nLozinka: ${lozinka}`);
-    //!!Ovaj alert ćemo kasnije zameniti pozivom backendu!!
-    navigate('/izlozbe');
+    const korisnik = {
+      email: email,
+      lozinka: lozinka
+    };
+
+    fetch('http://127.0.0.1:8000/api/prijava', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(korisnik)
+    })
+      .then(res => {
+        if (!res.ok) {
+          return res.json().then(err => {
+            throw new Error(err.poruka || 'Greška pri prijavi.');
+          });
+        }
+        return res.json();
+      })
+      .then(data => {
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('uloga', data.korisnik.uloga);
+        localStorage.setItem('korisnik', JSON.stringify(data.korisnik));
+        alert('Uspešna prijava!');
+        navigate('/izlozbe');
+        window.location.reload();
+      })
+      .catch(err => {
+        console.error(err);
+        alert('Greška: ' + err.message);
+      });
   };
 
   return (
