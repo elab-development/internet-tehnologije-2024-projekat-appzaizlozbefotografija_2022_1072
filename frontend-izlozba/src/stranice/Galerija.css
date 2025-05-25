@@ -24,7 +24,7 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 2rem;
-  flex: 1; /* ovo omogućava da paginacija ide pri dnu */
+  flex: 1; 
 }
 
 .galerija-item {
@@ -68,7 +68,6 @@
   margin: 0.2rem 0 0;
 }
 
-/* Strelice za paginaciju */
 .paginacija-strelice {
   position: relative;
   width: 100%;

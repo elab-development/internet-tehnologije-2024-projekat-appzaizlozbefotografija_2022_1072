@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './Izlozbe.css';
 import InputField from '../komponente/InputField';
+import { useNavigate } from 'react-router-dom';
 
 export default function Izlozbe() {
   const [izlozbe, setIzlozbe] = useState([]);
@@ -9,8 +10,8 @@ export default function Izlozbe() {
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 3;
+  const navigate = useNavigate();
 
-  // Dohvatanje izložbi i fotografija
   useEffect(() => {
     axios.get('http://localhost:8000/api/izlozbe')
       .then(res => {
@@ -29,7 +30,7 @@ export default function Izlozbe() {
       });
   }, []);
 
-  // Filtriranje po nazivu
+  // Filtriranje po nazivu izložbe
   const filtriraneIzlozbe = izlozbe.filter((izl) =>
     izl.naziv.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -39,7 +40,7 @@ export default function Izlozbe() {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const currentIzlozbe = filtriraneIzlozbe.slice(startIndex, startIndex + itemsPerPage);
 
-  // Pronalazak naslovne slike
+  // Pronalazak naslovne slike po nazivu fotografije
   const getNaslovnaSlika = (izlozbaId) => {
     if (izlozbaId === 1) {
       const lampioni = fotografije.find(f => f.naziv === "Lampioni iznad Valete");
@@ -51,13 +52,19 @@ export default function Izlozbe() {
     return null;
   };
 
-  // Klik na karticu
-  const handleKlik = () => {
-    alert("Morate biti prijavljeni da biste videli detalje izložbe.");
-  };
-
+  // Promena strane
   const handlePageChange = (page) => {
     setCurrentPage(page);
+  };
+
+  // Klik na karticu izložbe
+  const handleKlikNaIzlozbu = (id) => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      alert("Morate biti prijavljeni da biste videli detalje izložbe.");
+    } else {
+      navigate(`/izlozbe/${id}`);
+    }
   };
 
   return (
@@ -79,7 +86,11 @@ export default function Izlozbe() {
           const naslovnaSlika = getNaslovnaSlika(izl.id);
 
           return (
-            <div key={izl.id} className="izlozba-kartica" onClick={handleKlik}>
+            <div
+              key={izl.id}
+              className="izlozba-kartica"
+              onClick={() => handleKlikNaIzlozbu(izl.id)}
+            >
               {naslovnaSlika ? (
                 <img
                   src={`http://localhost:8000/storage/${naslovnaSlika}`}

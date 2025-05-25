@@ -1,6 +1,6 @@
 .izlozbe-container {
   min-height: 100vh;
-  padding-top: 6rem; /* da ne udari u navbar */
+  padding-top: 6rem;  
   padding-left: 2rem;
   padding-right: 2rem;
   text-align: center;
@@ -10,7 +10,7 @@
 }
 
 .izlozbe-grid {
-  flex: 1; /* raste da popuni prostor */
+  flex: 1; 
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 2rem;

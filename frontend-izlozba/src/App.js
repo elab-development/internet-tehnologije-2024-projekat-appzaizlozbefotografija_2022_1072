@@ -4,7 +4,7 @@ import Prijava from './stranice/Prijava';
 import Izlozbe from './stranice/Izlozbe';
 import Galerija from './stranice/Galerija';
 import Registracija from './stranice/Registracija';
-import IzlozbaDetalji from './stranice/IzlozbaDetalji'; // dodaj ovu komponentu
+import IzlozbaDetalji from './stranice/IzlozbaDetalji';
 import Navbar from './komponente/Navbar'; 
 
 function App() {
@@ -17,7 +17,7 @@ function App() {
         <Route path="/izlozbe" element={<Izlozbe />} />
         <Route path="/galerija" element={<Galerija />} />
         <Route path="/registracija" element={<Registracija />} />
-        <Route path="/izlozba" element={<IzlozbaDetalji />} /> {/* nova ruta */}
+        <Route path="/izlozbe/:id" element={<IzlozbaDetalji />} />
       </Routes>
     </Router>
   );

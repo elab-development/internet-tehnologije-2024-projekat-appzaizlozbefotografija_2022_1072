@@ -1,7 +1,6 @@
-// src/komponente/Navbar.js
 import React from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import Button from '../komponente/Button'; // dodato
+import Button from '../komponente/Button'; 
 import './Navbar.css';
 
 export default function Navbar() {
@@ -22,7 +21,7 @@ export default function Navbar() {
       localStorage.removeItem('uloga');
       localStorage.removeItem('korisnik');
       navigate('/prijava');
-      window.location.reload(); // osvežava navbar
+      window.location.reload();
     });
   };
 
