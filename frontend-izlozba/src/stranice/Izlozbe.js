@@ -1,58 +1,57 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import './Izlozbe.css';
-import InputField from '../komponente/InputField'; // <- dodato
+import InputField from '../komponente/InputField';
 
 export default function Izlozbe() {
-  const izlozbe = [
-    {
-      id: 1,
-      naziv: 'Izložba 1',
-      lokacija: 'Beograd',
-      datum: '2025-06-10',
-      slika: '/izlozbe1.jpeg'
-    },
-    {
-      id: 2,
-      naziv: 'Izložba 2',
-      lokacija: 'Novi Sad',
-      datum: '2025-07-01',
-      slika: '/izlozbe1.jpeg'
-    },
-    {
-      id: 3,
-      naziv: 'Izložba 3',
-      lokacija: 'Niš',
-      datum: '2025-08-15',
-      slika: '/izlozbe1.jpeg'
-    },
-    {
-      id: 4,
-      naziv: 'Izložba 4',
-      lokacija: 'Beograd',
-      datum: '2025-06-10',
-      slika: '/izlozbe1.jpeg'
-    },
-    {
-      id: 5,
-      naziv: 'Izložba 5',
-      lokacija: 'Beograd',
-      datum: '2025-06-10',
-      slika: '/izlozbe1.jpeg'
-    }
-  ];
-
+  const [izlozbe, setIzlozbe] = useState([]);
+  const [fotografije, setFotografije] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 3;
 
+  // Dohvatanje izložbi i fotografija
+  useEffect(() => {
+    axios.get('http://localhost:8000/api/izlozbe')
+      .then(res => {
+        setIzlozbe(res.data.data);
+      })
+      .catch(err => {
+        console.error("Greška pri dohvatanju izložbi:", err);
+      });
+
+    axios.get('http://localhost:8000/api/fotografije')
+      .then(res => {
+        setFotografije(res.data);
+      })
+      .catch(err => {
+        console.error("Greška pri dohvatanju fotografija:", err);
+      });
+  }, []);
+
+  // Filtriranje po nazivu
   const filtriraneIzlozbe = izlozbe.filter((izl) =>
     izl.naziv.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  // Paginacija
   const totalPages = Math.ceil(filtriraneIzlozbe.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const currentIzlozbe = filtriraneIzlozbe.slice(startIndex, startIndex + itemsPerPage);
 
+  // Pronalazak naslovne slike
+  const getNaslovnaSlika = (izlozbaId) => {
+    if (izlozbaId === 1) {
+      const lampioni = fotografije.find(f => f.naziv === "Lampioni iznad Valete");
+      return lampioni ? lampioni.putanja_slike : null;
+    } else if (izlozbaId === 2) {
+      const kapadokija = fotografije.find(f => f.naziv === "Kapadokijska stena");
+      return kapadokija ? kapadokija.putanja_slike : null;
+    }
+    return null;
+  };
+
+  // Klik na karticu
   const handleKlik = () => {
     alert("Morate biti prijavljeni da biste videli detalje izložbe.");
   };
@@ -76,16 +75,28 @@ export default function Izlozbe() {
       />
 
       <div className="izlozbe-grid">
-        {currentIzlozbe.map((izl) => (
-          <div key={izl.id} className="izlozba-kartica" onClick={handleKlik}>
-            <img src={izl.slika} alt={izl.naziv} className="izlozba-slika" />
-            <div className="izlozba-tekst">
-              <h2>{izl.naziv}</h2>
-              <p>{izl.lokacija}</p>
-              <p>{new Date(izl.datum).toLocaleDateString('sr-RS')}</p>
+        {currentIzlozbe.map((izl) => {
+          const naslovnaSlika = getNaslovnaSlika(izl.id);
+
+          return (
+            <div key={izl.id} className="izlozba-kartica" onClick={handleKlik}>
+              {naslovnaSlika ? (
+                <img
+                  src={`http://localhost:8000/storage/${naslovnaSlika}`}
+                  alt={izl.naziv}
+                  className="izlozba-slika"
+                />
+              ) : (
+                <div className="placeholder-slika">Nema slike</div>
+              )}
+              <div className="izlozba-tekst">
+                <h2>{izl.naziv}</h2>
+                <p>{izl.lokacija}</p>
+                <p>{new Date(izl.datum).toLocaleDateString('sr-RS')}</p>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       <div className="paginacija-strelice">
