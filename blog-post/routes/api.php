@@ -15,34 +15,35 @@ Route::middleware('auth:sanctum')->post('/odjava', [AutentifikacijaKontroler::cl
 
 // ✅ Javne rute
 Route::get('/izlozbe', [IzlozbaController::class, 'index']);
-Route::get('/izlozbe/{id}', [IzlozbaController::class, 'show']);
-
 Route::get('/fotografije', [FotografijaController::class, 'index']);
 Route::get('/fotografije/{id}', [FotografijaController::class, 'show']);
-
 Route::get('/prijave', [PrijavaController::class, 'index']);
 Route::get('/prijave/{id}', [PrijavaController::class, 'show']);
 
-// ✅ Zaštićene rute – pristup po ulozi se proverava u kontroleru
+// ✅ Zaštićene rute – pristup samo za autentifikovane korisnike
 Route::middleware('auth:sanctum')->group(function () {
-    // Admin – upravljanje izložbama
+
+    // ✅ Detalji izložbe (samo ulogovani mogu pristupiti)
+    Route::get('/izlozbe/{id}', [IzlozbaController::class, 'show']);
+
+    // ✅ Admin – upravljanje izložbama
     Route::post('/izlozbe', [IzlozbaController::class, 'store']);
     Route::put('/izlozbe/{id}', [IzlozbaController::class, 'update']);
     Route::delete('/izlozbe/{id}', [IzlozbaController::class, 'destroy']);
 
-    // Fotograf – dodavanje fotografija
+    // ✅ Fotograf – dodavanje fotografija
     Route::post('/fotografije', [FotografijaController::class, 'store']);
 
-    // Admin i fotograf – brisanje fotografija
+    // ✅ Admin i fotograf – brisanje fotografija
     Route::delete('/fotografije/{id}', [FotografijaController::class, 'destroy']);
 
-    // Posetilac – kreiranje prijave
+    // ✅ Posetilac – kreiranje prijave
     Route::post('/prijave', [PrijavaController::class, 'store']);
 
-    // Admin i posetilac – brisanje prijave
+    // ✅ Admin i posetilac – brisanje prijave
     Route::delete('/prijave/{id}', [PrijavaController::class, 'destroy']);
 
-    // Test ruta za proveru autentifikacije
+    // ✅ Test ruta za proveru autentifikacije
     Route::get('/zasticeno', function (Request $request) {
         return response()->json([
             'poruka' => 'Pristup uspešan. Dobrodošao, ' . $request->user()->name
@@ -59,4 +60,5 @@ Route::put('/izlozbe/{id}/prijave/datum', [PrijavaController::class, 'azurirajDa
 // ✅ Test ruta
 Route::get('/test', fn() => response()->json(['radi' => true]));
 
+// ✅ Reset lozinke
 Route::post('/zaboravljena-lozinka', [AutentifikacijaKontroler::class, 'resetujLozinku']);
