@@ -1,44 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Galerija.css';
 import Button from '../komponente/Button';
-import useKorisnik from '../hooks/useKorisnik'; // NOVO
+import useKorisnik from '../hooks/useKorisnik';
+import axios from 'axios';
 
 export default function Galerija() {
-  const korisnik = useKorisnik(); // NOVO
+  const korisnik = useKorisnik();
 
-  const sveFotografije = [
-    {
-      id: 1,
-      naziv: 'Fotografija 1',
-      izlozba: 'Izložba 1',
-      slika: '/galerija1.jpeg',
-    },
-    {
-      id: 2,
-      naziv: 'Fotografija 2',
-      izlozba: 'Izložba 1',
-      slika: '/galerija1.jpeg',
-    },
-    {
-      id: 3,
-      naziv: 'Fotografija 3',
-      izlozba: 'Izložba 2',
-      slika: '/galerija1.jpeg',
-    },
-    {
-      id: 4,
-      naziv: 'Fotografija 4',
-      izlozba: 'Izložba 4',
-      slika: '/galerija1.jpeg',
-    },
-    {
-      id: 5,
-      naziv: 'Fotografija 5',
-      izlozba: 'Izložba 5',
-      slika: '/galerija1.jpeg',
-    }
-  ];
-
+  const [sveFotografije, setSveFotografije] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 3;
 
@@ -50,24 +19,130 @@ export default function Galerija() {
     setCurrentPage(page);
   };
 
+  const [showForm, setShowForm] = useState(false);
+  const [naziv, setNaziv] = useState('');
+  const [opis, setOpis] = useState('');
+  const [izlozbaId, setIzlozbaId] = useState('');
+  const [file, setFile] = useState(null);
+
+  const ucitajFotografije = () => {
+    axios.get('http://localhost:8000/api/fotografije')
+      .then(res => setSveFotografije(res.data))
+      .catch(err => console.error('Greška pri dohvatanju fotografija:', err));
+  };
+
+  useEffect(() => {
+    ucitajFotografije();
+  }, []);
+
+  const handleDodaj = async () => {
+    const formData = new FormData();
+    formData.append('naziv', naziv);
+    formData.append('opis', opis);
+    formData.append('izlozba_id', izlozbaId);
+    if (file) {
+      formData.append('slika', file);
+    }
+
+    try {
+      await fetch('http://localhost:8000/api/fotografije', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        },
+        body: formData
+      });
+      alert('Fotografija uspešno dodata!');
+      setShowForm(false);
+      setNaziv('');
+      setOpis('');
+      setIzlozbaId('');
+      setFile(null);
+      ucitajFotografije();
+    } catch (err) {
+      alert('Greška pri dodavanju fotografije.');
+      console.error(err);
+    }
+  };
+
+  const handleObrisi = async (id) => {
+    const potvrda = window.confirm('Da li ste sigurni da želite da obrišete fotografiju?');
+    if (!potvrda) return;
+
+    try {
+      await fetch(`http://localhost:8000/api/fotografije/${id}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+      alert('Fotografija uspešno obrisana!');
+      ucitajFotografije();
+    } catch (err) {
+      alert('Greška pri brisanju.');
+      console.error(err);
+    }
+  };
+
   return (
     <div className="galerija-wrapper">
       <h1 className="galerija-naslov">Pregled fotografija</h1>
 
       {korisnik?.uloga === 'fotograf' && (
         <div className="galerija-dugmad-horizontalno">
-          <Button text="Dodaj fotografiju" onClick={() => alert("Dodaj")} />
-          <Button text="Obriši fotografiju" onClick={() => alert("Obriši")} />
+          <Button text="Dodaj fotografiju" onClick={() => setShowForm(true)} />
+        </div>
+      )}
+
+      {showForm && (
+        <div className="modal-container">
+          <div className="overlay" onClick={() => setShowForm(false)}></div>
+          <div className="modal-forma" onClick={(e) => e.stopPropagation()}>
+            <h3>Dodaj novu fotografiju</h3>
+            <input
+              type="text"
+              placeholder="Naziv"
+              value={naziv}
+              onChange={e => setNaziv(e.target.value)}
+            />
+            <input
+              type="text"
+              placeholder="Opis"
+              value={opis}
+              onChange={e => setOpis(e.target.value)}
+            />
+            <input
+              type="text"
+              placeholder="ID izložbe"
+              value={izlozbaId}
+              onChange={e => setIzlozbaId(e.target.value)}
+            />
+            <input
+              type="file"
+              onChange={e => setFile(e.target.files[0])}
+            />
+            <div style={{ marginTop: '10px' }}>
+              <Button text="Pošalji" onClick={handleDodaj} />
+              <Button text="Otkaži" onClick={() => setShowForm(false)} />
+            </div>
+          </div>
         </div>
       )}
 
       <div className="galerija-grid">
         {currentFotografije.map((foto) => (
           <div key={foto.id} className="galerija-item">
-            <img src={foto.slika} alt={foto.naziv} className="galerija-slika" />
+            <img
+              src={`http://localhost:8000/storage/${foto.putanja_slike}`}
+              alt={foto.naziv}
+              className="galerija-slika"
+            />
             <div className="galerija-opis">
               <p className="naziv-fotografije">{foto.naziv}</p>
-              <p className="naziv-izlozbe">{foto.izlozba}</p>
+              <p className="naziv-izlozbe">{foto.izlozba?.naziv}</p>
+              {korisnik?.uloga === 'fotograf' && (
+                <Button text="Obriši" onClick={() => handleObrisi(foto.id)} />
+              )}
             </div>
           </div>
         ))}
@@ -81,7 +156,6 @@ export default function Galerija() {
         >
           ‹
         </button>
-
         <button
           onClick={() => handlePageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
