@@ -1,42 +1,43 @@
 import React, { useState } from 'react';
 import './Galerija.css';
 import Button from '../komponente/Button';
+import useKorisnik from '../hooks/useKorisnik'; // NOVO
 
 export default function Galerija() {
+  const korisnik = useKorisnik(); // NOVO
+
   const sveFotografije = [
     {
       id: 1,
       naziv: 'Fotografija 1',
-      izlozba: 'Izlozba 1',
+      izlozba: 'Izložba 1',
       slika: '/galerija1.jpeg',
     },
     {
       id: 2,
       naziv: 'Fotografija 2',
-      izlozba: 'Izlozba 1',
+      izlozba: 'Izložba 1',
       slika: '/galerija1.jpeg',
     },
     {
       id: 3,
       naziv: 'Fotografija 3',
-      izlozba: 'Izlozba 2',
+      izlozba: 'Izložba 2',
       slika: '/galerija1.jpeg',
     },
     {
       id: 4,
       naziv: 'Fotografija 4',
-      izlozba: 'Izlozba 4',
+      izlozba: 'Izložba 4',
       slika: '/galerija1.jpeg',
     },
     {
       id: 5,
       naziv: 'Fotografija 5',
-      izlozba: 'Izlozba 5',
+      izlozba: 'Izložba 5',
       slika: '/galerija1.jpeg',
     }
   ];
-
-  const korisnik = { uloga: 'fotograf' };
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 3;
@@ -53,7 +54,7 @@ export default function Galerija() {
     <div className="galerija-wrapper">
       <h1 className="galerija-naslov">Pregled fotografija</h1>
 
-      {korisnik.uloga === 'fotograf' && (
+      {korisnik?.uloga === 'fotograf' && (
         <div className="galerija-dugmad-horizontalno">
           <Button text="Dodaj fotografiju" onClick={() => alert("Dodaj")} />
           <Button text="Obriši fotografiju" onClick={() => alert("Obriši")} />
