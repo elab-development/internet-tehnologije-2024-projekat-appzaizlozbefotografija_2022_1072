@@ -9,7 +9,7 @@ class FotografijaController extends Controller
 {
     public function index()
     {
-        return response()->json(Fotografija::all(), 200);
+        return response()->json(Fotografija::with('izlozba')->get(), 200);
     }
 
     public function store(Request $request)
@@ -25,7 +25,6 @@ class FotografijaController extends Controller
             'slika' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'url' => 'nullable|url|max:2048',
         ]);
-        
 
         if (!$request->hasFile('slika') && !$request->filled('url')) {
             return response()->json(['poruka' => 'Morate uneti URL slike ili uploadovati fajl.'], 422);
@@ -44,12 +43,12 @@ class FotografijaController extends Controller
 
         $fotografija->save();
 
-        return response()->json($fotografija, 201);
+        return response()->json($fotografija->load('izlozba'), 201);
     }
 
     public function show($id)
     {
-        $fotografija = Fotografija::find($id);
+        $fotografija = Fotografija::with('izlozba')->find($id);
 
         if (!$fotografija) {
             return response()->json(['message' => 'Fotografija nije pronađena.'], 404);
@@ -73,7 +72,7 @@ class FotografijaController extends Controller
 
         $fotografija->update($validated);
 
-        return response()->json($fotografija, 200);
+        return response()->json($fotografija->load('izlozba'), 200);
     }
 
     public function destroy($id)
