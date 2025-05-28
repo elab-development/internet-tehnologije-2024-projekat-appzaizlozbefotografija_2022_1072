@@ -62,3 +62,5 @@ Route::get('/test', fn() => response()->json(['radi' => true]));
 
 // ✅ Reset lozinke
 Route::post('/zaboravljena-lozinka', [AutentifikacijaKontroler::class, 'resetujLozinku']);
+
+Route::middleware('auth:sanctum')->get('/korisnik', [AutentifikacijaKontroler::class, 'korisnik']);
