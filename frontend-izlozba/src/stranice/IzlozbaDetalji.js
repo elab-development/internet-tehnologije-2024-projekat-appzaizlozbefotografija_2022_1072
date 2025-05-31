@@ -8,6 +8,7 @@ export default function IzlozbaDetalji() {
   const { id } = useParams();
   const [izlozba, setIzlozba] = useState(null);
   const [greska, setGreska] = useState('');
+  const [uspeh, setUspeh] = useState('');
 
   useEffect(() => {
     axios.get(`http://localhost:8000/api/izlozbe/${id}`, {
@@ -30,7 +31,41 @@ export default function IzlozbaDetalji() {
       });
   }, [id]);
 
-  if (greska) return null;
+  const handleRezervacija = () => {
+    const token = localStorage.getItem('token');
+    const korisnik = JSON.parse(localStorage.getItem('korisnik'));
+
+    if (!korisnik || !token) {
+      alert('Morate biti prijavljeni kao posetilac da biste rezervisali mesto.');
+      return;
+    }
+
+    fetch('http://localhost:8000/api/prijave', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        korisnik_id: korisnik.id,
+        izlozba_id: parseInt(id)
+      })
+    })
+      .then(res => {
+        if (!res.ok) throw new Error('Greška pri rezervaciji.');
+        return res.json();
+      })
+      .then(data => {
+        alert('Uspešno ste rezervisali mesto! Potvrda je poslata na mejl.');
+        setUspeh('Uspešno rezervisano.');
+      })
+      .catch(err => {
+        console.error(err);
+        alert('Greška: ' + err.message);
+      });
+  };
+
+  if (greska) return <p style={{ textAlign: 'center', marginTop: '2rem' }}>{greska}</p>;
   if (!izlozba) return <p style={{ textAlign: 'center', marginTop: '2rem' }}>Učitavanje...</p>;
 
   return (
@@ -42,8 +77,9 @@ export default function IzlozbaDetalji() {
         <p><strong>Datum:</strong> {new Date(izlozba.datum).toLocaleDateString('sr-RS')}</p>
         <Button
           text="Rezerviši svoje mesto"
-          onClick={() => alert('Prijava')}
+          onClick={handleRezervacija}
         />
+        {uspeh && <p style={{ color: 'green', marginTop: '1rem' }}>{uspeh}</p>}
       </div>
     </div>
   );
