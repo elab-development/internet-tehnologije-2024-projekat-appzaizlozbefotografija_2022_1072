@@ -16,6 +16,8 @@ export default function Izlozbe() {
   const navigate = useNavigate();
 
   const [showForm, setShowForm] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [editId, setEditId] = useState(null);
   const [naziv, setNaziv] = useState('');
   const [lokacija, setLokacija] = useState('');
   const [datum, setDatum] = useState('');
@@ -36,37 +38,62 @@ export default function Izlozbe() {
       .catch(err => console.error("Greška pri dohvatanju izložbi:", err));
   };
 
-  const handleDodaj = async () => {
+  const resetForm = () => {
+    setNaziv('');
+    setLokacija('');
+    setDatum('');
+    setOpis('');
+    setDostupnaMesta('');
+    setFile(null);
+    setEditMode(false);
+    setEditId(null);
+  };
+
+  const handleDodajIliIzmeni = async () => {
     const formData = new FormData();
     formData.append('naziv', naziv);
     formData.append('lokacija', lokacija);
     formData.append('datum', datum);
     formData.append('opis', opis);
     formData.append('dostupnaMesta', dostupnaMesta);
-    if (file) {
-      formData.append('naslovna_slika', file);
-    }
+    if (file) formData.append('naslovna_slika', file);
 
     try {
-      await axios.post('http://localhost:8000/api/izlozbe', formData, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-          'Content-Type': 'multipart/form-data'
-        }
-      });
-      alert('Izložba uspešno dodata!');
+      if (editMode) {
+        await axios.post(`http://localhost:8000/api/izlozbe/${editId}?_method=PUT`, formData, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+            'Content-Type': 'multipart/form-data'
+          }
+        });
+        alert('Izložba uspešno izmenjena!');
+      } else {
+        await axios.post('http://localhost:8000/api/izlozbe', formData, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+            'Content-Type': 'multipart/form-data'
+          }
+        });
+        alert('Izložba uspešno dodata!');
+      }
       setShowForm(false);
-      setNaziv('');
-      setLokacija('');
-      setDatum('');
-      setOpis('');
-      setDostupnaMesta('');
-      setFile(null);
+      resetForm();
       ucitajIzlozbe();
     } catch (err) {
-      alert('Greška pri dodavanju izložbe.');
+      alert('Greška pri slanju.');
       console.error(err);
     }
+  };
+
+  const handleIzmeni = (izlozba) => {
+    setEditMode(true);
+    setEditId(izlozba.id);
+    setNaziv(izlozba.naziv);
+    setLokacija(izlozba.lokacija);
+    setDatum(izlozba.datum);
+    setOpis(izlozba.opis || '');
+    setDostupnaMesta(izlozba.dostupnaMesta || '');
+    setShowForm(true);
   };
 
   const handleObrisi = async (id) => {
@@ -125,7 +152,7 @@ export default function Izlozbe() {
 
       {korisnik?.uloga === 'administrator' && (
         <div className="izlozbe-dugmad-horizontalno">
-          <Button text="Dodaj izložbu" onClick={() => setShowForm(true)} />
+          <Button text="Dodaj izložbu" onClick={() => { resetForm(); setShowForm(true); }} />
         </div>
       )}
 
@@ -133,7 +160,7 @@ export default function Izlozbe() {
         <div className="modal-container">
           <div className="overlay" onClick={() => setShowForm(false)}></div>
           <div className="modal-forma" onClick={(e) => e.stopPropagation()}>
-            <h3>Dodaj novu izložbu</h3>
+            <h3>{editMode ? 'Izmeni izložbu' : 'Dodaj novu izložbu'}</h3>
             <input type="text" placeholder="Naziv" value={naziv} onChange={e => setNaziv(e.target.value)} />
             <input type="text" placeholder="Lokacija" value={lokacija} onChange={e => setLokacija(e.target.value)} />
             <input type="date" value={datum} onChange={e => setDatum(e.target.value)} />
@@ -141,7 +168,7 @@ export default function Izlozbe() {
             <input type="number" placeholder="Dostupna mesta" value={dostupnaMesta} onChange={e => setDostupnaMesta(e.target.value)} />
             <input type="file" onChange={e => setFile(e.target.files[0])} />
             <div style={{ marginTop: '10px' }}>
-              <Button text="Pošalji" onClick={handleDodaj} />
+              <Button text="Pošalji" onClick={handleDodajIliIzmeni} />
               <Button text="Otkaži" onClick={() => setShowForm(false)} />
             </div>
           </div>
@@ -154,11 +181,7 @@ export default function Izlozbe() {
           return (
             <div key={izl.id} className="izlozba-kartica" onClick={() => handleKlikNaIzlozbu(izl.id)}>
               {naslovnaSlika ? (
-                <img
-                  src={`http://localhost:8000/storage/${naslovnaSlika}`}
-                  alt={izl.naziv}
-                  className="izlozba-slika"
-                />
+                <img src={`http://localhost:8000/storage/${naslovnaSlika}`} alt={izl.naziv} className="izlozba-slika" />
               ) : (
                 <div className="placeholder-slika">Nema slike</div>
               )}
@@ -167,10 +190,10 @@ export default function Izlozbe() {
                 <p>{izl.lokacija}</p>
                 <p>{new Date(izl.datum).toLocaleDateString('sr-RS')}</p>
                 {korisnik?.uloga === 'administrator' && (
-                  <Button text="Obriši" onClick={(e) => {
-                    e.stopPropagation();
-                    handleObrisi(izl.id);
-                  }} />
+                  <>
+                    <Button text="Izmeni" onClick={(e) => { e.stopPropagation(); handleIzmeni(izl); }} />
+                    <Button text="Obriši" onClick={(e) => { e.stopPropagation(); handleObrisi(izl.id); }} />
+                  </>
                 )}
               </div>
             </div>
