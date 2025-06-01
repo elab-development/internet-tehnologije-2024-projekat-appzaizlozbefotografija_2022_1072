@@ -7,11 +7,8 @@ use App\Models\Prijava;
 use App\Models\Korisnik;
 use App\Models\Izlozba;
 use Illuminate\Support\Str;
-
 use App\Mail\PotvrdaPrijaveMail;
 use Illuminate\Support\Facades\Mail;
-
-// QR Code imports
 use BaconQrCode\Writer;
 use BaconQrCode\Renderer\ImageRenderer;
 use BaconQrCode\Renderer\RendererStyle\RendererStyle;
@@ -46,7 +43,7 @@ class PrijavaController extends Controller
         $korisnik = Korisnik::find($validated['korisnik_id']);
         $izlozba = Izlozba::find($validated['izlozba_id']);
 
-        // Generiši QR kod kao base64 string
+        // Generisanje QR koda
         $renderer = new ImageRenderer(
             new RendererStyle(200),
             new SvgImageBackEnd()
@@ -55,7 +52,7 @@ class PrijavaController extends Controller
         $image = $writer->writeString($prijava->qr_kod);
         $qrKodBase64 = base64_encode($image);
 
-        // Pošalji mejl sa QR kodom
+        // Mejl sa QR kodom
         Mail::to($korisnik->email)->send(
             new PotvrdaPrijaveMail($prijava, $korisnik, $izlozba, $qrKodBase64)
         );
@@ -110,17 +107,6 @@ class PrijavaController extends Controller
         $prijava->delete();
 
         return response()->json(null, 204);
-    }
-
-    // Pomoćna metoda: simulirano slanje potvrde
-    public function posaljiPotvrdu($id)
-    {
-        $prijava = Prijava::find($id);
-        if (!$prijava) {
-            return response()->json(['error' => 'Prijava nije pronađena.'], 404);
-        }
-
-        return response()->json(['message' => 'Potvrda o prijavi je uspešno poslata (simulirano).']);
     }
 
     // Ažuriranje datuma svih prijava za izložbu
