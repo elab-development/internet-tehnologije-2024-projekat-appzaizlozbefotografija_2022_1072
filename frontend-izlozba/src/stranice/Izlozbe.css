@@ -1,20 +1,30 @@
 .izlozbe-container {
   min-height: 100vh;
-  padding-top: 6rem;  
-  padding-left: 2rem;
-  padding-right: 2rem;
-  text-align: center;
+  padding: 6rem 2rem 2rem;
   background-color: white;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
+}
+
+.naslov-izlozbe {
+  text-align: left;
+  font-size: 2rem;
+  margin-bottom: 2rem;
+}
+
+.izlozbe-dugmad-horizontalno {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  margin-bottom: 2rem;
 }
 
 .izlozbe-grid {
-  flex: 1; 
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 2rem;
-  margin-top: 2rem;
+  flex: 1;
 }
 
 .izlozba-kartica {
@@ -47,7 +57,6 @@
   height: 30%;
 }
 
-
 .izlozba-tekst h2 {
   margin: 0;
   font-size: 1.2rem;
@@ -56,12 +65,6 @@
 .izlozba-tekst p {
   margin: 0.5rem 0;
   color: #5F7161;
-}
-
-.naslov-izlozbe {
-  text-align: left;
-  font-size: 2rem;
-  margin-bottom: 2rem;
 }
 
 .paginacija-strelice {
@@ -103,4 +106,39 @@
 
 .strelica-desno {
   right: 10px;
+}
+
+.modal-container {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+}
+
+.modal-forma {
+  position: relative;
+  z-index: 1001;
+  background-color: white;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+  width: 400px;
+  max-width: 90%;
+}
+
+.modal-forma input {
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
 }

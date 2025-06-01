@@ -4,14 +4,18 @@ export default function useKorisnik() {
   const [korisnik, setKorisnik] = useState(null);
 
   useEffect(() => {
-    const korisnikStr = localStorage.getItem('korisnik');
-    if (korisnikStr) {
-      try {
-        setKorisnik(JSON.parse(korisnikStr));
-      } catch (e) {
-        console.error("Nevalidan JSON u 'korisnik':", e);
-        setKorisnik(null);
+    try {
+      const korisnikStr = localStorage.getItem('korisnik');
+      if (korisnikStr) {
+        const parsed = JSON.parse(korisnikStr);
+        if (parsed?.uloga) {
+          setKorisnik(parsed);
+        } else {
+          console.warn('Nema uloge u korisnik objektu.');
+        }
       }
+    } catch (e) {
+      console.error("Greška pri parsiranju korisnika iz localStorage:", e);
     }
   }, []);
 
