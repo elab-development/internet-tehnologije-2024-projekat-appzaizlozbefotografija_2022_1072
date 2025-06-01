@@ -64,3 +64,5 @@ Route::get('/test', fn() => response()->json(['radi' => true]));
 Route::post('/zaboravljena-lozinka', [AutentifikacijaKontroler::class, 'resetujLozinku']);
 
 Route::middleware('auth:sanctum')->get('/korisnik', [AutentifikacijaKontroler::class, 'korisnik']);
+
+Route::get('/izlozbe/{id}/prijave', [IzlozbaController::class, 'prijave']);

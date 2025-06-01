@@ -106,4 +106,17 @@ class IzlozbaController extends Controller
 
         return response()->json($izlozba->fotografije);
     }
+
+    public function prijave($id)
+{
+    $izlozba = Izlozba::find($id);
+    if (!$izlozba) {
+        return response()->json(['error' => 'Izložba nije pronađena.'], 404);
+    }
+
+    return response()->json(
+        $izlozba->prijave()->with('korisnik')->get()
+    );
+}
+
 }
