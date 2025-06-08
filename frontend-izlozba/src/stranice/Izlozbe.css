@@ -142,3 +142,23 @@
   border: 1px solid #ccc;
   border-radius: 6px;
 }
+.filtri-red {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.filtri-red .input-group {
+  flex: 1;
+  min-width: 200px;
+}
+.input-element {
+  padding: 0.5rem;
+  font-size: 1rem;
+  border: 1px solid #5F7161;
+  border-radius: 0;
+  height: 42px; /* Dodato za ujednačavanje visine */
+  box-sizing: border-box;
+}
+

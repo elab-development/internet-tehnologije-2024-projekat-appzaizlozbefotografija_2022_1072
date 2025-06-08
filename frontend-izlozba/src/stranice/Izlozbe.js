@@ -10,6 +10,7 @@ export default function Izlozbe() {
   const [fotografije, setFotografije] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [lokacijaFilter, setLokacijaFilter] = useState('');
+  const [datumFilter, setDatumFilter] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 3;
   const korisnik = useKorisnik();
@@ -116,7 +117,8 @@ export default function Izlozbe() {
 
   const filtriraneIzlozbe = izlozbe.filter((izl) =>
     izl.naziv.toLowerCase().includes(searchTerm.toLowerCase()) &&
-    (lokacijaFilter === '' || izl.lokacija === lokacijaFilter)
+    (lokacijaFilter === '' || izl.lokacija === lokacijaFilter) &&
+    (datumFilter === '' || izl.datum >= datumFilter)
   );
 
   const totalPages = Math.ceil(filtriraneIzlozbe.length / itemsPerPage);
@@ -143,38 +145,55 @@ export default function Izlozbe() {
     <div className="izlozbe-container">
       <h1 className="naslov-izlozbe">Pregled izložbi</h1>
 
-      <div className="input-group">
-        <label htmlFor="search" className="input-label">Pretraži izložbe po nazivu:</label>
-        <input
-          id="search"
-          type="text"
-          placeholder="Pretraži izložbe..."
-          value={searchTerm}
-          onChange={(e) => {
-            setSearchTerm(e.target.value);
-            setCurrentPage(1);
-          }}
-          className="input-element"
-        />
-      </div>
+      <div className="filtri-red">
+  <div className="input-group">
+    <label htmlFor="search" className="input-label">Pretraži izložbe po nazivu:</label>
+    <input
+      id="search"
+      type="text"
+      placeholder="Pretraži izložbe..."
+      value={searchTerm}
+      onChange={(e) => {
+        setSearchTerm(e.target.value);
+        setCurrentPage(1);
+      }}
+      className="input-element"
+    />
+  </div>
 
-      <div className="input-group">
-        <label htmlFor="lokacijaFilter" className="input-label">Filtriraj po lokaciji:</label>
-        <select
-          id="lokacijaFilter"
-          value={lokacijaFilter}
-          onChange={(e) => {
-            setLokacijaFilter(e.target.value);
-            setCurrentPage(1);
-          }}
-          className="input-element"
-        >
-          <option value="">Sve lokacije</option>
-          {sveLokacije.map((lok, idx) => (
-            <option key={idx} value={lok}>{lok}</option>
-          ))}
-        </select>
-      </div>
+  <div className="input-group">
+    <label htmlFor="lokacijaFilter" className="input-label">Filtriraj po lokaciji:</label>
+    <select
+      id="lokacijaFilter"
+      value={lokacijaFilter}
+      onChange={(e) => {
+        setLokacijaFilter(e.target.value);
+        setCurrentPage(1);
+      }}
+      className="input-element"
+    >
+      <option value="">Sve lokacije</option>
+      {sveLokacije.map((lok, idx) => (
+        <option key={idx} value={lok}>{lok}</option>
+      ))}
+    </select>
+  </div>
+
+  <div className="input-group">
+    <label htmlFor="datumFilter" className="input-label">Prikaži izložbe od datuma:</label>
+    <input
+      id="datumFilter"
+      type="date"
+      value={datumFilter}
+      onChange={(e) => {
+        setDatumFilter(e.target.value);
+        setCurrentPage(1);
+      }}
+      className="input-element"
+    />
+  </div>
+</div>
+
 
       {korisnik?.uloga === 'administrator' && (
         <div className="izlozbe-dugmad-horizontalno">
