@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './Izlozbe.css';
-import InputField from '../komponente/InputField';
 import Button from '../komponente/Button';
 import useKorisnik from '../hooks/useKorisnik';
 import { useNavigate } from 'react-router-dom';
@@ -10,6 +9,7 @@ export default function Izlozbe() {
   const [izlozbe, setIzlozbe] = useState([]);
   const [fotografije, setFotografije] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const [lokacijaFilter, setLokacijaFilter] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 3;
   const korisnik = useKorisnik();
@@ -115,7 +115,8 @@ export default function Izlozbe() {
   };
 
   const filtriraneIzlozbe = izlozbe.filter((izl) =>
-    izl.naziv.toLowerCase().includes(searchTerm.toLowerCase())
+    izl.naziv.toLowerCase().includes(searchTerm.toLowerCase()) &&
+    (lokacijaFilter === '' || izl.lokacija === lokacijaFilter)
   );
 
   const totalPages = Math.ceil(filtriraneIzlozbe.length / itemsPerPage);
@@ -136,19 +137,44 @@ export default function Izlozbe() {
     }
   };
 
+  const sveLokacije = [...new Set(izlozbe.map((izl) => izl.lokacija))];
+
   return (
     <div className="izlozbe-container">
       <h1 className="naslov-izlozbe">Pregled izložbi</h1>
 
-      <InputField
-        type="text"
-        placeholder="Pretraži izložbe po nazivu..."
-        value={searchTerm}
-        onChange={(e) => {
-          setSearchTerm(e.target.value);
-          setCurrentPage(1);
-        }}
-      />
+      <div className="input-group">
+        <label htmlFor="search" className="input-label">Pretraži izložbe po nazivu:</label>
+        <input
+          id="search"
+          type="text"
+          placeholder="Pretraži izložbe..."
+          value={searchTerm}
+          onChange={(e) => {
+            setSearchTerm(e.target.value);
+            setCurrentPage(1);
+          }}
+          className="input-element"
+        />
+      </div>
+
+      <div className="input-group">
+        <label htmlFor="lokacijaFilter" className="input-label">Filtriraj po lokaciji:</label>
+        <select
+          id="lokacijaFilter"
+          value={lokacijaFilter}
+          onChange={(e) => {
+            setLokacijaFilter(e.target.value);
+            setCurrentPage(1);
+          }}
+          className="input-element"
+        >
+          <option value="">Sve lokacije</option>
+          {sveLokacije.map((lok, idx) => (
+            <option key={idx} value={lok}>{lok}</option>
+          ))}
+        </select>
+      </div>
 
       {korisnik?.uloga === 'administrator' && (
         <div className="izlozbe-dugmad-horizontalno">
