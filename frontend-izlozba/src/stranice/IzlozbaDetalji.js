@@ -99,18 +99,28 @@ export default function IzlozbaDetalji() {
 
   return (
     <div className="detalji-container">
+      <div className="detalji-slika">
+        {izlozba.naslovna_slika && (
+          <img src={`http://localhost:8000/storage/fotografije/${izlozba.naslovna_slika}`} alt="Naslovna slika" />
+        )}
+      </div>
+
       <div className="detalji-tekst">
         <h1 className="naslov-izlozbe">{izlozba.naziv}</h1>
         <p className="opis">{izlozba.opis}</p>
-        <p><strong>Lokacija:</strong> {izlozba.lokacija}</p>
-        <p><strong>Datum:</strong> {new Date(izlozba.datum).toLocaleDateString('sr-RS')}</p>
+        <p className="lokacija"><strong>Lokacija:</strong> {izlozba.lokacija}</p>
+        <p className="datum"><strong>Datum:</strong> {new Date(izlozba.datum).toLocaleDateString('sr-RS')}</p>
 
         {korisnik?.uloga === 'posetilac' && (
-          <Button text="Rezerviši svoje mesto" onClick={handleRezervacija} />
+          <div className="dugme-rezervacija">
+            <Button text="Rezerviši svoje mesto" onClick={handleRezervacija} />
+          </div>
         )}
 
         {korisnik?.uloga === 'administrator' && (
-          <Button text={prikaziPrijave ? "Sakrij prijave" : "Prikaži sve prijave"} onClick={togglePrikaziPrijave} />
+          <div className="dugme-rezervacija">
+            <Button text={prikaziPrijave ? "Sakrij prijave" : "Prikaži sve prijave"} onClick={togglePrikaziPrijave} />
+          </div>
         )}
 
         {uspeh && <p style={{ color: 'green', marginTop: '1rem' }}>{uspeh}</p>}

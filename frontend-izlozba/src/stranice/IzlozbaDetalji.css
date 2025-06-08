@@ -1,30 +1,13 @@
 .detalji-container {
   display: flex;
   flex-direction: row;
-  padding: 6rem 4rem 2rem 4rem;
+  padding: 6rem 4rem 2rem;
   background-color: white;
   min-height: 100vh;
   gap: 4rem;
+  flex-wrap: wrap;
   box-sizing: border-box;
-}
-
-.detalji-tekst {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.naslov-izlozbe {
-  text-align: left;
-  font-size: 2rem;
-  font-weight: bold;
-  margin-bottom: 1rem;
-}
-
-.opis {
-  margin-bottom: 1rem;
-  color: #333;
+  justify-content: center;
 }
 
 .detalji-slika {
@@ -32,21 +15,54 @@
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  padding: 0;
 }
 
 .detalji-slika img {
   width: 100%;
-  max-width: 450px;
+  max-width: 500px;
   height: auto;
   object-fit: cover;
-  border-radius: 0;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-.prijava-dugme {
-  width: 100%;
-  max-width: 200px;
-  padding: 0.5rem 1rem;
-  margin-bottom: 0;
-  align-self: flex-start;
+.detalji-tekst {
+  flex: 1;
+  background-color: transparent;
+  padding: 2rem;
+  border-radius: 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.naslov-izlozbe {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.opis {
+  color: #333;
+  font-size: 1.1rem;
+}
+
+.lokacija,
+.datum {
+  font-size: 1rem;
+  color: #555;
+}
+
+.dugme-rezervacija {
+  margin-top: 1.5rem;
+}
+
+.dugme-rezervacija button {
+  transition: all 0.3s ease;
+}
+
+.dugme-rezervacija button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
 }
