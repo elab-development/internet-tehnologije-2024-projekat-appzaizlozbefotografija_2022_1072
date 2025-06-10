@@ -85,3 +85,15 @@ body {
 #root {
   padding-top: 70px; /* jednako visini navbara */
 }
+
+.naslov-stranice {
+  text-align: center;
+  font-size: 2rem;
+  font-weight: bold;
+  margin-top: 3rem;
+  margin-bottom: 2rem;
+  color: black;
+}
+
+
+

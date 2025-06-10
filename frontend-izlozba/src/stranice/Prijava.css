@@ -1,12 +1,13 @@
+.stranica-wrapper {
+  padding-top: 70px; /* da se breadcrumb ne zalepi za navbar */
+}
+
 .prijava-container {
   background-color: white;
-  min-height: 100vh;
+  min-height: calc(100vh - 70px);
   display: flex;
   justify-content: center;
   align-items: center;
-  /*min-height: calc(100vh - 70px);*/ 
-  padding-top: 65px;   /* približno visini navbara + razmak */
-  /*padding-bottom: 7%; /* isto kao gore radi simetrije */
 }
 
 .prijava-forma {
@@ -21,8 +22,7 @@
 }
 
 .link-registracija a {
-  color: #0000EE
-;
+  color: #0000EE;
   text-decoration: none;
 }
 

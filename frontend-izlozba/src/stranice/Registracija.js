@@ -3,6 +3,7 @@ import InputField from '../komponente/InputField';
 import Button from '../komponente/Button';
 import { Link, useNavigate } from 'react-router-dom';
 import './Prijava.css';
+import Breadcrumbs from '../komponente/Breadcrumbs';
 
 export default function Registracija() {
   const [ime, setIme] = useState('');
@@ -19,14 +20,13 @@ export default function Registracija() {
     }
 
     const korisnik = {
-  ime: ime,
-  prezime: prezime,
-  email: email,
-  lozinka: lozinka,
-  lozinka_confirmation: potvrdaLozinke, 
-  uloga: 'posetilac'
-};
-
+      ime: ime,
+      prezime: prezime,
+      email: email,
+      lozinka: lozinka,
+      lozinka_confirmation: potvrdaLozinke,
+      uloga: 'posetilac'
+    };
 
     fetch('http://127.0.0.1:8000/api/registracija', {
       method: 'POST',
@@ -46,7 +46,7 @@ export default function Registracija() {
       .then(data => {
         localStorage.setItem('token', data.token);
         alert('Uspešna registracija! Prijavite se.');
-        navigate('/prijava'); 
+        navigate('/prijava');
         window.location.reload();
       })
       .catch(err => {
@@ -56,56 +56,59 @@ export default function Registracija() {
   };
 
   return (
-    <div className="prijava-container">
-      <div className="prijava-forma">
-        <h2 style={{ textAlign: 'center' }}>Registracija korisnika</h2>
+    <div className="stranica-wrapper">
+      <Breadcrumbs />
+      <div className="prijava-container">
+        <div className="prijava-forma">
+          <h2 style={{ textAlign: 'center' }}>Registracija korisnika</h2>
 
-        <InputField
-          label="Ime"
-          type="text"
-          placeholder="Unesite ime"
-          value={ime}
-          onChange={(e) => setIme(e.target.value)}
-        />
+          <InputField
+            label="Ime"
+            type="text"
+            placeholder="Unesite ime"
+            value={ime}
+            onChange={(e) => setIme(e.target.value)}
+          />
 
-        <InputField
-          label="Prezime"
-          type="text"
-          placeholder="Unesite prezime"
-          value={prezime}
-          onChange={(e) => setPrezime(e.target.value)}
-        />
+          <InputField
+            label="Prezime"
+            type="text"
+            placeholder="Unesite prezime"
+            value={prezime}
+            onChange={(e) => setPrezime(e.target.value)}
+          />
 
-        <InputField
-          label="E-mail"
-          type="email"
-          placeholder="Unesite e-mail"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
+          <InputField
+            label="E-mail"
+            type="email"
+            placeholder="Unesite e-mail"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
 
-        <InputField
-          label="Lozinka"
-          type="password"
-          placeholder="Unesite lozinku"
-          value={lozinka}
-          onChange={(e) => setLozinka(e.target.value)}
-        />
+          <InputField
+            label="Lozinka"
+            type="password"
+            placeholder="Unesite lozinku"
+            value={lozinka}
+            onChange={(e) => setLozinka(e.target.value)}
+          />
 
-        <InputField
-          label="Potvrda lozinke"
-          type="password"
-          placeholder="Potvrdite lozinku"
-          value={potvrdaLozinke}
-          onChange={(e) => setPotvrdaLozinke(e.target.value)}
-        />
+          <InputField
+            label="Potvrda lozinke"
+            type="password"
+            placeholder="Potvrdite lozinku"
+            value={potvrdaLozinke}
+            onChange={(e) => setPotvrdaLozinke(e.target.value)}
+          />
 
-        <div style={{ textAlign: 'center', marginTop: '1rem' }}>
-          <Button text="Registruj se" onClick={handleRegistracija} />
-        </div>
+          <div style={{ textAlign: 'center', marginTop: '1rem' }}>
+            <Button text="Registruj se" onClick={handleRegistracija} />
+          </div>
 
-        <div className="link-registracija">
-          <Link to="/prijava">Već imate nalog? Prijavite se ovde</Link>
+          <div className="link-registracija">
+            <Link to="/prijava">Već imate nalog? Prijavite se ovde</Link>
+          </div>
         </div>
       </div>
     </div>

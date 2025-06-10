@@ -7,11 +7,12 @@
   justify-content: space-between;
 }
 
-.naslov-izlozbe {
+/*.naslov-izlozbe {
   text-align: left;
   font-size: 2rem;
+  font-weight: normal;
   margin-bottom: 2rem;
-}
+}*/
 
 .izlozbe-dugmad-horizontalno {
   display: flex;
@@ -146,7 +147,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 3rem;
 }
 
 .filtri-red .input-group {
@@ -158,7 +159,7 @@
   font-size: 1rem;
   border: 1px solid #5F7161;
   border-radius: 0;
-  height: 42px; /* Dodato za ujednačavanje visine */
+  height: 42px;
   box-sizing: border-box;
 }
 

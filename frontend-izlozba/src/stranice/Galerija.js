@@ -3,6 +3,7 @@ import './Galerija.css';
 import Button from '../komponente/Button';
 import useKorisnik from '../hooks/useKorisnik';
 import axios from 'axios';
+import Breadcrumbs from '../komponente/Breadcrumbs';
 
 export default function Galerija() {
   const korisnik = useKorisnik();
@@ -85,84 +86,87 @@ export default function Galerija() {
   };
 
   return (
-    <div className="galerija-wrapper">
-      <h1 className="galerija-naslov">Pregled fotografija</h1>
+    <div className="stranica-wrapper">
+      <Breadcrumbs />
+      <div className="galerija-container">
+       
 
-      {korisnik?.uloga === 'fotograf' && (
-        <div className="galerija-dugmad-horizontalno">
-          <Button text="Dodaj fotografiju" onClick={() => setShowForm(true)} />
-        </div>
-      )}
+        {korisnik?.uloga === 'fotograf' && (
+          <div className="galerija-dugmad-horizontalno">
+            <Button text="Dodaj fotografiju" onClick={() => setShowForm(true)} />
+          </div>
+        )}
 
-      {showForm && (
-        <div className="modal-container">
-          <div className="overlay" onClick={() => setShowForm(false)}></div>
-          <div className="modal-forma" onClick={(e) => e.stopPropagation()}>
-            <h3>Dodaj novu fotografiju</h3>
-            <input
-              type="text"
-              placeholder="Naziv"
-              value={naziv}
-              onChange={e => setNaziv(e.target.value)}
-            />
-            <input
-              type="text"
-              placeholder="Opis"
-              value={opis}
-              onChange={e => setOpis(e.target.value)}
-            />
-            <input
-              type="text"
-              placeholder="ID izložbe"
-              value={izlozbaId}
-              onChange={e => setIzlozbaId(e.target.value)}
-            />
-            <input
-              type="file"
-              onChange={e => setFile(e.target.files[0])}
-            />
-            <div style={{ marginTop: '10px' }}>
-              <Button text="Pošalji" onClick={handleDodaj} />
-              <Button text="Otkaži" onClick={() => setShowForm(false)} />
+        {showForm && (
+          <div className="modal-container">
+            <div className="overlay" onClick={() => setShowForm(false)}></div>
+            <div className="modal-forma" onClick={(e) => e.stopPropagation()}>
+              <h3>Dodaj novu fotografiju</h3>
+              <input
+                type="text"
+                placeholder="Naziv"
+                value={naziv}
+                onChange={e => setNaziv(e.target.value)}
+              />
+              <input
+                type="text"
+                placeholder="Opis"
+                value={opis}
+                onChange={e => setOpis(e.target.value)}
+              />
+              <input
+                type="text"
+                placeholder="ID izložbe"
+                value={izlozbaId}
+                onChange={e => setIzlozbaId(e.target.value)}
+              />
+              <input
+                type="file"
+                onChange={e => setFile(e.target.files[0])}
+              />
+              <div style={{ marginTop: '10px' }}>
+                <Button text="Pošalji" onClick={handleDodaj} />
+                <Button text="Otkaži" onClick={() => setShowForm(false)} />
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
-      <div className="galerija-grid">
-        {currentFotografije.map((foto) => (
-          <div key={foto.id} className="galerija-item">
-            <img
-              src={`http://localhost:8000/storage/${foto.putanja_slike}`}
-              alt={foto.naziv}
-              className="galerija-slika"
-            />
-            <div className="galerija-opis">
-              <p className="naziv-fotografije">{foto.naziv}</p>
-              <p className="naziv-izlozbe">{foto.izlozba?.naziv}</p>
-              {korisnik?.uloga === 'fotograf' && (
-                <Button text="Obriši" onClick={() => handleObrisi(foto.id)} />
-              )}
+        <div className="galerija-grid">
+          {currentFotografije.map((foto) => (
+            <div key={foto.id} className="galerija-item">
+              <img
+                src={`http://localhost:8000/storage/${foto.putanja_slike}`}
+                alt={foto.naziv}
+                className="galerija-slika"
+              />
+              <div className="galerija-opis">
+                <p className="naziv-fotografije">{foto.naziv}</p>
+                <p className="naziv-izlozbe">{foto.izlozba?.naziv}</p>
+                {korisnik?.uloga === 'fotograf' && (
+                  <Button text="Obriši" onClick={() => handleObrisi(foto.id)} />
+                )}
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
 
-      <div className="paginacija-strelice">
-        <button
-          onClick={() => handlePageChange(currentPage - 1)}
-          disabled={currentPage === 1}
-          className="strelica-levo"
-        >
-          ‹
-        </button>
-        <button
-          onClick={() => handlePageChange(currentPage + 1)}
-          disabled={currentPage === totalPages}
-          className="strelica-desno"
-        >
-          ›
-        </button>
+        <div className="paginacija-strelice">
+          <button
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="strelica-levo"
+          >
+            ‹
+          </button>
+          <button
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className="strelica-desno"
+          >
+            ›
+          </button>
+        </div>
       </div>
     </div>
   );

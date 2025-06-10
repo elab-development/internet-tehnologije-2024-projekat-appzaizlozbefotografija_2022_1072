@@ -7,11 +7,14 @@
   justify-content: space-between;
 }
 
-.galerija-naslov {
+/*.galerija-naslov {
   text-align: left;
   font-size: 2rem;
   margin-bottom: 2rem;
-}
+  margin-left: 1.9rem;
+  margin-top: 3rem;
+}*/
+
 
 .galerija-dugmad-horizontalno {
   display: flex;

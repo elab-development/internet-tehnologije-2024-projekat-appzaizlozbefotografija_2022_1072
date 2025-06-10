@@ -4,6 +4,7 @@ import './Izlozbe.css';
 import Button from '../komponente/Button';
 import useKorisnik from '../hooks/useKorisnik';
 import { useNavigate } from 'react-router-dom';
+import Breadcrumbs from '../komponente/Breadcrumbs';
 
 export default function Izlozbe() {
   const [izlozbe, setIzlozbe] = useState([]);
@@ -142,113 +143,115 @@ export default function Izlozbe() {
   const sveLokacije = [...new Set(izlozbe.map((izl) => izl.lokacija))];
 
   return (
-    <div className="izlozbe-container">
-      <h1 className="naslov-izlozbe">Pregled izložbi</h1>
+    <div className="stranica-wrapper">
+      <Breadcrumbs />
+      <div className="izlozbe-container">
+        <h1 className="naslov-stranice">Pregled izložbi</h1>
 
-      <div className="filtri-red">
-  <div className="input-group">
-    <label htmlFor="search" className="input-label">Pretraži izložbe po nazivu:</label>
-    <input
-      id="search"
-      type="text"
-      placeholder="Pretraži izložbe..."
-      value={searchTerm}
-      onChange={(e) => {
-        setSearchTerm(e.target.value);
-        setCurrentPage(1);
-      }}
-      className="input-element"
-    />
-  </div>
+        <div className="filtri-red">
+          <div className="input-group">
+            <label htmlFor="search" className="input-label">Pretraži izložbe po nazivu:</label>
+            <input
+              id="search"
+              type="text"
+              placeholder="Pretraži izložbe..."
+              value={searchTerm}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setCurrentPage(1);
+              }}
+              className="input-element"
+            />
+          </div>
 
-  <div className="input-group">
-    <label htmlFor="lokacijaFilter" className="input-label">Filtriraj po lokaciji:</label>
-    <select
-      id="lokacijaFilter"
-      value={lokacijaFilter}
-      onChange={(e) => {
-        setLokacijaFilter(e.target.value);
-        setCurrentPage(1);
-      }}
-      className="input-element"
-    >
-      <option value="">Sve lokacije</option>
-      {sveLokacije.map((lok, idx) => (
-        <option key={idx} value={lok}>{lok}</option>
-      ))}
-    </select>
-  </div>
+          <div className="input-group">
+            <label htmlFor="lokacijaFilter" className="input-label">Filtriraj po lokaciji:</label>
+            <select
+              id="lokacijaFilter"
+              value={lokacijaFilter}
+              onChange={(e) => {
+                setLokacijaFilter(e.target.value);
+                setCurrentPage(1);
+              }}
+              className="input-element"
+            >
+              <option value="">Sve lokacije</option>
+              {sveLokacije.map((lok, idx) => (
+                <option key={idx} value={lok}>{lok}</option>
+              ))}
+            </select>
+          </div>
 
-  <div className="input-group">
-    <label htmlFor="datumFilter" className="input-label">Prikaži izložbe od datuma:</label>
-    <input
-      id="datumFilter"
-      type="date"
-      value={datumFilter}
-      onChange={(e) => {
-        setDatumFilter(e.target.value);
-        setCurrentPage(1);
-      }}
-      className="input-element"
-    />
-  </div>
-</div>
-
-
-      {korisnik?.uloga === 'administrator' && (
-        <div className="izlozbe-dugmad-horizontalno">
-          <Button text="Dodaj izložbu" onClick={() => { resetForm(); setShowForm(true); }} />
-        </div>
-      )}
-
-      {showForm && (
-        <div className="modal-container">
-          <div className="overlay" onClick={() => setShowForm(false)}></div>
-          <div className="modal-forma" onClick={(e) => e.stopPropagation()}>
-            <h3>{editMode ? 'Izmeni izložbu' : 'Dodaj novu izložbu'}</h3>
-            <input type="text" placeholder="Naziv" value={naziv} onChange={e => setNaziv(e.target.value)} />
-            <input type="text" placeholder="Lokacija" value={lokacija} onChange={e => setLokacija(e.target.value)} />
-            <input type="date" value={datum} onChange={e => setDatum(e.target.value)} />
-            <input type="text" placeholder="Opis (opciono)" value={opis} onChange={e => setOpis(e.target.value)} />
-            <input type="number" placeholder="Dostupna mesta" value={dostupnaMesta} onChange={e => setDostupnaMesta(e.target.value)} />
-            <input type="file" onChange={e => setFile(e.target.files[0])} />
-            <div style={{ marginTop: '10px' }}>
-              <Button text="Pošalji" onClick={handleDodajIliIzmeni} />
-              <Button text="Otkaži" onClick={() => setShowForm(false)} />
-            </div>
+          <div className="input-group">
+            <label htmlFor="datumFilter" className="input-label">Prikaži izložbe od datuma:</label>
+            <input
+              id="datumFilter"
+              type="date"
+              value={datumFilter}
+              onChange={(e) => {
+                setDatumFilter(e.target.value);
+                setCurrentPage(1);
+              }}
+              className="input-element"
+            />
           </div>
         </div>
-      )}
 
-      <div className="izlozbe-grid">
-        {currentIzlozbe.map((izl) => {
-          const naslovnaSlika = getNaslovnaSlika(izl.id);
-          return (
-            <div key={izl.id} className="izlozba-kartica" onClick={() => handleKlikNaIzlozbu(izl.id)}>
-              {naslovnaSlika ? (
-                <img src={`http://localhost:8000/storage/${naslovnaSlika}`} alt={izl.naziv} className="izlozba-slika" />
-              ) : (
-                <div className="placeholder-slika">Nema slike</div>
-              )}
-              <div className="izlozba-tekst">
-                <h2>{izl.naziv}</h2>
-                <p>{izl.lokacija}</p>
-                <p>{new Date(izl.datum).toLocaleDateString('sr-RS')}</p>
-                {korisnik?.uloga === 'administrator' && (
-                  <>
-                    <Button text="Izmeni" onClick={(e) => { e.stopPropagation(); handleIzmeni(izl); }} />
-                    <Button text="Obriši" onClick={(e) => { e.stopPropagation(); handleObrisi(izl.id); }} />
-                  </>
-                )}
+        {korisnik?.uloga === 'administrator' && (
+          <div className="izlozbe-dugmad-horizontalno">
+            <Button text="Dodaj izložbu" onClick={() => { resetForm(); setShowForm(true); }} />
+          </div>
+        )}
+
+        {showForm && (
+          <div className="modal-container">
+            <div className="overlay" onClick={() => setShowForm(false)}></div>
+            <div className="modal-forma" onClick={(e) => e.stopPropagation()}>
+              <h3>{editMode ? 'Izmeni izložbu' : 'Dodaj novu izložbu'}</h3>
+              <input type="text" placeholder="Naziv" value={naziv} onChange={e => setNaziv(e.target.value)} />
+              <input type="text" placeholder="Lokacija" value={lokacija} onChange={e => setLokacija(e.target.value)} />
+              <input type="date" value={datum} onChange={e => setDatum(e.target.value)} />
+              <input type="text" placeholder="Opis (opciono)" value={opis} onChange={e => setOpis(e.target.value)} />
+              <input type="number" placeholder="Dostupna mesta" value={dostupnaMesta} onChange={e => setDostupnaMesta(e.target.value)} />
+              <input type="file" onChange={e => setFile(e.target.files[0])} />
+              <div style={{ marginTop: '10px' }}>
+                <Button text="Pošalji" onClick={handleDodajIliIzmeni} />
+                <Button text="Otkaži" onClick={() => setShowForm(false)} />
               </div>
             </div>
-          );
-        })}
-      </div>
+          </div>
+        )}
 
-      <div className="paginacija-strelice">
-        <button onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 1} className="strelica-levo">‹</button>
-        <button onClick={() => setCurrentPage(currentPage + 1)} disabled={currentPage === totalPages} className="strelica-desno">›</button>
+        <div className="izlozbe-grid">
+          {currentIzlozbe.map((izl) => {
+            const naslovnaSlika = getNaslovnaSlika(izl.id);
+            return (
+              <div key={izl.id} className="izlozba-kartica" onClick={() => handleKlikNaIzlozbu(izl.id)}>
+                {naslovnaSlika ? (
+                  <img src={`http://localhost:8000/storage/${naslovnaSlika}`} alt={izl.naziv} className="izlozba-slika" />
+                ) : (
+                  <div className="placeholder-slika">Nema slike</div>
+                )}
+                <div className="izlozba-tekst">
+                  <h2>{izl.naziv}</h2>
+                  <p>{izl.lokacija}</p>
+                  <p>{new Date(izl.datum).toLocaleDateString('sr-RS')}</p>
+                  {korisnik?.uloga === 'administrator' && (
+                    <>
+                      <Button text="Izmeni" onClick={(e) => { e.stopPropagation(); handleIzmeni(izl); }} />
+                      <Button text="Obriši" onClick={(e) => { e.stopPropagation(); handleObrisi(izl.id); }} />
+                    </>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        <div className="paginacija-strelice">
+          <button onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 1} className="strelica-levo">‹</button>
+          <button onClick={() => setCurrentPage(currentPage + 1)} disabled={currentPage === totalPages} className="strelica-desno">›</button>
+        </div>
       </div>
     </div>
   );

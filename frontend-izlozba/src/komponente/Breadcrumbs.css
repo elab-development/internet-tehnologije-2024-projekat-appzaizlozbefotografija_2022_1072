@@ -1,10 +1,10 @@
 .breadcrumbs {
   font-size: 0.9rem;
-  margin: 0 2rem 1rem;
+  margin-top: 1rem;
+  margin-left: 2rem;
+  margin-bottom: 0.2rem;
   color: black;
   font-weight: 500;
-  position: relative;
-  z-index: 2;
 }
 
 .breadcrumbs a {
