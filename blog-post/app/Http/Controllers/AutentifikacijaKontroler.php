@@ -78,10 +78,8 @@ class AutentifikacijaKontroler extends Controller
     }
 
     //reset lozinke
-    
-
-public function resetujLozinku(Request $request)
-{
+    public function resetujLozinku(Request $request)
+    {
     $request->validate([
         'email' => 'required|email|exists:korisnici,email',
         'nova_lozinka' => 'required|min:6|confirmed',
@@ -94,6 +92,5 @@ public function resetujLozinku(Request $request)
     return response()->json([
         'poruka' => 'Lozinka je uspešno promenjena.'
     ]);
-}
-
+    }
 }

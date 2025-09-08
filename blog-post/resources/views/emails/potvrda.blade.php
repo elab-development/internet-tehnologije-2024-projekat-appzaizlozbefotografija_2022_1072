@@ -10,7 +10,7 @@ Datum izložbe: **{{ \Carbon\Carbon::parse($izlozba->datum)->format('d.m.Y') }}*
 @component('mail::panel')
 Ovo je vaš QR kod za pristup izložbi:
 <br>
-<img src="data:image/png;base64,{{ $qrKodBase64 }}" alt="QR Kod" />
+<img src="data:image/svg+xml;base64,{{ $qrKodBase64 }}" alt="QR Kod" />
 @endcomponent
 
 Hvala što koristite našu aplikaciju!

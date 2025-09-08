@@ -36,7 +36,9 @@ class FotografijaController extends Controller
         $fotografija->izlozba_id = $validated['izlozba_id'];
 
         if ($request->hasFile('slika')) {
-            $fotografija->putanja_slike = $request->file('slika')->store('fotografije', 'public');
+            $imeFajla = time() . '.' . $request->file('slika')->getClientOriginalExtension();
+            $request->file('slika')->move(public_path('fotografije'), $imeFajla);
+            $fotografija->putanja_slike = 'fotografije/' . $imeFajla; // ovo frontend koristi
         } elseif ($request->filled('url')) {
             $fotografija->putanja_slike = $validated['url'];
         }

@@ -12,7 +12,7 @@ class Preusmeravanje
     {
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
-                return redirect('/home'); // možeš i ovo promeniti po potrebi
+                return redirect('/home'); 
             }
         }
 
