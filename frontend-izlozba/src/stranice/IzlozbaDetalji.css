@@ -10,6 +10,7 @@
   justify-content: center;
 }
 
+
 .detalji-slika {
   flex: 1;
   display: flex;
@@ -22,10 +23,11 @@
   max-width: 500px;
   height: auto;
   object-fit: cover;
-  border-radius: 12px;
+  border-radius: 0; 
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
+/* Tekstualni deo */
 .detalji-tekst {
   flex: 1;
   background-color: transparent;
@@ -46,14 +48,31 @@
 .opis {
   color: #333;
   font-size: 1.1rem;
+  line-height: 1.6;
 }
 
+/* ZAJEDNIČKI STIL ZA LOKACIJU / DATUM / BROJ MESTA */
 .lokacija,
-.datum {
+.datum,
+.slobodna-mesta {
   font-size: 1rem;
   color: #555;
+  line-height: 1.5;
+  margin: 0;
 }
 
+/* labela (bold) + vrednost (normal) */
+.detalji-tekst p strong {
+  font-weight: 700;
+}
+
+.lokacija span,
+.datum span,
+.slobodna-mesta span {
+  font-weight: 400; /* normal — da izgleda kao “Beograd” i datum */
+}
+
+/* Dugme rezervacije */
 .dugme-rezervacija {
   margin-top: 1.5rem;
 }
@@ -65,4 +84,14 @@
 .dugme-rezervacija button:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 900px) {
+  .detalji-container {
+    padding: 6rem 2rem 2rem;
+    gap: 2rem;
+  }
+  .detalji-slika img {
+    max-width: 100%;
+  }
 }

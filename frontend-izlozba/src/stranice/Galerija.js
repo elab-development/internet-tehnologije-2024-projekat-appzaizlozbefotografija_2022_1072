@@ -136,10 +136,11 @@ export default function Galerija() {
           {currentFotografije.map((foto) => (
             <div key={foto.id} className="galerija-item">
               <img
-                src={`http://localhost:8000/storage/${foto.putanja_slike}`}
-                alt={foto.naziv}
-                className="galerija-slika"
+                 src={`http://localhost:8000/${foto.putanja_slike}`}
+                 alt={foto.naziv}
+                 className="galerija-slika"
               />
+
               <div className="galerija-opis">
                 <p className="naziv-fotografije">{foto.naziv}</p>
                 <p className="naziv-izlozbe">{foto.izlozba?.naziv}</p>

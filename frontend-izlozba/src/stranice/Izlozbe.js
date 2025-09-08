@@ -131,12 +131,13 @@ export default function Izlozbe() {
     return foto ? foto.putanja_slike : null;
   };
 
-  const handleKlikNaIzlozbu = (id) => {
+  // prosleđujemo pun URL slike u detalje
+  const handleKlikNaIzlozbu = (id, slikaUrl) => {
     const token = localStorage.getItem('token');
     if (!token) {
       alert("Morate biti prijavljeni da biste videli detalje izložbe.");
     } else {
-      navigate(`/izlozbe/${id}`);
+      navigate(`/izlozbe/${id}`, { state: { slika: slikaUrl } });
     }
   };
 
@@ -225,10 +226,18 @@ export default function Izlozbe() {
         <div className="izlozbe-grid">
           {currentIzlozbe.map((izl) => {
             const naslovnaSlika = getNaslovnaSlika(izl.id);
+            const slikaFull = naslovnaSlika
+              ? (/^https?:\/\//i.test(naslovnaSlika) ? naslovnaSlika : `http://localhost:8000/${naslovnaSlika}`)
+              : null;
+
             return (
-              <div key={izl.id} className="izlozba-kartica" onClick={() => handleKlikNaIzlozbu(izl.id)}>
-                {naslovnaSlika ? (
-                  <img src={`http://localhost:8000/storage/${naslovnaSlika}`} alt={izl.naziv} className="izlozba-slika" />
+              <div
+                key={izl.id}
+                className="izlozba-kartica"
+                onClick={() => handleKlikNaIzlozbu(izl.id, slikaFull)}
+              >
+                {slikaFull ? (
+                  <img src={slikaFull} alt={izl.naziv} className="izlozba-slika" />
                 ) : (
                   <div className="placeholder-slika">Nema slike</div>
                 )}
